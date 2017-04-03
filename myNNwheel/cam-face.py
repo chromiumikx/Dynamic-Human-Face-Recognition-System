@@ -40,7 +40,8 @@ def getFaces(image_name, face_area):# face_Area是左上角和右下角坐标(x1
             # 切图索引：第一个是宽，第二个是长
             iface = img[y1:y2, x1:x2]
             # 标准化图像大小
-            std_iface = cv2.resize(iface, (60, 80), interpolation=cv2.INTER_CUBIC)
+            # 归一化可尝试64*64，可对比各种分辨率的识别率
+            std_iface = cv2.resize(iface, (64, 64), interpolation=cv2.INTER_CUBIC)
             result.append(std_iface)
         return result
 
@@ -84,23 +85,23 @@ def catchUserFace():
             cv2.rectangle(frame,(x1,y1),(x2,y2),(100,0,0),1)
 
         i = i+1
-        if i == 10:
+        if i == 6:
             face = getFaces(frame, face_area)
             if face:
                 j = j + 1
                 saveFacePics(face, user_name, j)
-                cv2.imshow('Cut Face', face[0])# cutFaces()返回值为四维，是多个face的数值矩阵
+                cv2.imshow('Cut Face', face[0])# getFaces()返回值为四维，是多个face的数值矩阵
 
-        if (i>10) and (i<13):
+        if (i>6) and (i<8):
             for (x1, y1, x2, y2) in face_area:
                 cv2.rectangle(frame, (x1, y1), (x2, y2), (255, 0, 0), 1)
 
-        if i > 13:
+        if i > 9:
             i = 0
 
         cv2.imshow('Face Detect',frame)
 
-        if (cv2.waitKey(1) & 0xFF == ord('q')) or (j == 20):
+        if (cv2.waitKey(1) & 0xFF == ord('q')) or (j == 20):# j：录取照片的数量
             break
 
     # 生成一个label.txt标记本文件夹的用户

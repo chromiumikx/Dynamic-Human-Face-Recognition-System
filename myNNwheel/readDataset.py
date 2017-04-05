@@ -7,8 +7,6 @@ import win32api
 import win32con
 import time
 
-from VK_CODE import VK_CODE
-
 '''
 读取文件夹中所有图片成矩阵，并读取用户id
 三通道转为一通道
@@ -22,7 +20,7 @@ def readStandardData(user_names):# 文件夹名字即用户名，为列表传入
         with open(user_name + "_label.txt", "r+") as fo:
             for file in files_name:
                 img = cv2.imread(user_name + "_data/" + file, cv2.IMREAD_GRAYSCALE)# 以灰度模式读取标准数据
-                StdFaceMat.append(img / 128 - 1.0)# 读出结果为一list
+                StdFaceMat.append(img / 128 - 1.0)# 读出结果为一list，0 ~ 255 转至 -1 ~ +1
 
                 # 打开一个文件
                 StdUserID.append(fo.read())
@@ -48,6 +46,23 @@ def readWeights(weights_path):
         weights.append([float(k) for k in ((i.strip()).split())])
     f.close()
     return weights
+
+'''
+复制到图片所在的文件夹中运行
+'''
+def resizePics():
+    pic_names = os.listdir()
+    pic_names.pop()
+    print(pic_names)
+
+    for ipic in pic_names:
+        img = cv2.imread(ipic)# 以灰度模式读取标准数据
+        std_iface = cv2.resize(img, (64, 64), interpolation=cv2.INTER_CUBIC)
+        if std_iface.ndim == 3:
+            gray = cv2.cvtColor(std_iface, cv2.COLOR_BGR2GRAY)
+        else:
+            gray = std_iface
+        cv2.imwrite(ipic, gray)
 
 if __name__ == "__main__":
     data, _ = readStandardData("ikx")

@@ -9,122 +9,133 @@ def trainNeuralNetwork():
 
     np.random.seed(1)
 
-    # ***************数据拼接*******************
-    inputs = []
-    out_puts = []
+    '''
+    标准数据拼接、加载
+    '''
     # 加载标准输入数据，并进行矩阵拼接，将两张图片拼接在一起作为一个输入
-    input_data_list_1, _ = readStandardData("ikx")
-    input_data_list_2, _ = readStandardData("qin")
-    for i in range(1000):
-        # 0，1随机
-        k = np.random.randint(0, 2)
+    train_pics, train_user_id = readStandardData(["ikx", "qin"])
 
-        if i < 200:
-            # 输出是 0 时，表示是相同
-            out_puts.append(0.0001)
-
+    train_samples = []
+    train_labels = []
+    two_pics = []
+    for i in range(len(train_pics)):
+        for j in range(len(train_pics)):
+            # 输出 [0,1] 表示是相同
+            if train_user_id[i] == train_user_id[j]:
+                train_labels.append([0, 1.])
+            else:
+            # 输出 [1,0] 表示相异
+                train_labels.append([1., 0])
             # 拼接 竖向
-            input_data = np.vstack((input_data_list_1[np.random.randint(0, len(input_data_list_1))], input_data_list_1[np.random.randint(0, len(input_data_list_1))]))
+            two_pics = np.vstack((train_pics[i], train_pics[j]))
             # .resize()是一个操作型函数
-            input_data.resize((1, input_data.size))
-            inputs.append(input_data[0])
-        else:
-            out_puts.append(0.9999)
-
-            # 拼接 竖向
-            input_data = np.vstack((input_data_list_1[np.random.randint(0, len(input_data_list_1))], input_data_list_2[np.random.randint(0, len(input_data_list_2))]))
-            input_data.resize((1, input_data.size))
-            inputs.append(input_data[0])
-    # 整个神经网络学习结果由两个（可修改成其他深度）权重矩阵（主要）构成
-    input_layer_col=input_data.size
-    inner_layer_row=input_layer_col
-    inner_layer_col=1000
-    output_layer_row=inner_layer_col
-    output_layer_col=1
-    w1=2*np.random.random((inner_layer_row, inner_layer_col)) - 1
-    w2=2*np.random.random((output_layer_row, output_layer_col)) - 1
-
-    x=np.array(inputs)
-    y=np.array(out_puts)
-    y.resize((y.size,1))
+            two_pics.resize((1, two_pics.size))
+            train_samples.append(two_pics[0])
 
 
-    # BP实现
-    for j in range(2000):
-        #正常计算网络各层各节点的值
-        #正常计算网络各层各节点的值
-        l1=logistic(np.dot(x, w1))
-        l2=logistic(np.dot(l1, w2))
+    '''
+    层数、神经元数目
+    '''
+    # 每层的神经元数目
+    # 第零层 输入的长度
+    # 第i层大小
+    layers = [two_pics.size, 1000, 2]
 
-        #从后向前计算每层误差以及高确信误差
-        #前层的误差由后层的高确信误差、该层与后层的权重网络决定
-        l2_error=y-l2
+
+    '''
+    权重
+    '''
+    Weights = []
+    bias = []
+    for i in range(len(layers)-1):
+        Weights.append(2 * np.random.random((layers[i], layers[i + 1])) - 1)
+
+    Weights = np.array(Weights)
+
+
+    '''
+    模型：整个运算过程
+    '''
+    learn_rate = 1/100.
+    x=np.array(train_samples)
+    y=np.array(train_labels)
+    for j in range(100):
+        for x_, y_ in getPatch(x, y, 100):
+            #正常计算网络各层各节点的值
+            #正常计算网络各层各节点的值
+            l1=logistic(np.dot(x_, Weights[0]))
+            l2=logistic(np.dot(l1, Weights[1]))
+
+            #从后向前计算每层误差以及高确信误差
+            #前层的误差由后层的高确信误差、该层与后层的权重网络决定
+            l2_error=y_-l2
+
+            if (np.mean(np.abs(l2_error)) < 0.000001):
+                break
+
+            l2_delta=l2_error*logistic(l2, True)
+
+            l1_delta=(l2_delta.dot(Weights[1].T))*logistic(l1, True)
+
+            '''
+            梯度下降算法更新权重
+            '''
+            Weights[1] = Weights[1] + (l1.T.dot(l2_delta)) * learn_rate
+            Weights[0] = Weights[0] + (x_.T.dot(l1_delta)) * learn_rate
 
         #以下是输出误差提示
-        if(j%50)==0:
+        if(j%10)==0:
             print("Error"+str(np.mean(np.abs(l2_error))))
+            print("准确：", np.sum(np.argmax(y_, 1) == np.argmax(l2, 1)) / 100.0)
 
-        if (np.mean(np.abs(l2_error)) < 0.0001):
-            break
-
-        l2_delta=l2_error*logistic(l2, True)
-
-        l1_error=l2_delta.dot(w2.T)
-
-        l1_delta=l1_error*logistic(l1, True)
-
-        w2 = w2 + l1.T.dot(l2_delta) / 100
-        w1 = w1 + x.T.dot(l1_delta) / 100
-
-    print(j)
-    print("ERR:\n",l2_error)
-    # 保存训练好的网络
-    saveWeights(w1, "w1")
-    saveWeights(w2, "w2")
+    l1 = logistic(np.dot(x, Weights[0]))
+    l2 = logistic(np.dot(l1, Weights[1]))
+    print(np.sum(np.argmax(y, 1) == np.argmax(l2, 1))/1600.)
 
 
-def predictMatchIndex():
-    w1 = readWeights("w1.txt")
-    w2 = readWeights("w2.txt")
+    '''
+    测试、数据拼接加载、运算
+    '''
     # 加载标准输入数据，并进行矩阵拼接，将两张图片拼接在一起作为一个输入
-    input_data_list, _ = readStandardData("std_ikx")
-    input_data_list_2, _ = readStandardData("sb")
+    test_pics, test_user_id = readStandardData(["sb"])
 
-    np.random.seed(1)
+    test_samples = []
+    test_labels = []
+    test_two_pics = []
+    for i in range(len(test_pics)):
+        for j in range(len(test_pics)):
+            # 输出 [0,1] 表示是相同
+            if test_user_id[i] == test_user_id[j]:
+                test_labels.append([0, 1.])
+            else:
+            # 输出 [1,0] 表示相异
+                test_labels.append([1., 0])
+            # 拼接 竖向
+            test_two_pics = np.vstack((test_pics[i], test_pics[j]))
+            # .resize()是一个操作型函数
+            test_two_pics.resize((1, test_two_pics.size))
+            test_samples.append(test_two_pics[0])
 
-    same_predict = 0
-    not_same_predict = 0
-    for i in range(40):
+    x=np.array(test_samples)
+    y=np.array(test_labels)
+    l1 = logistic(np.dot(x, Weights[0]))
+    l2 = logistic(np.dot(l1, Weights[1]))
+    print("Use sb:", np.sum(np.argmax(y, 1) == np.argmax(l2, 1)) / 1600.)
 
-        # 拼接 竖向
-        # 不同类分类情况
-        j = np.random.randint(0, len(input_data_list))
-        k = np.random.randint(0, len(input_data_list))
-        input_data = np.vstack((input_data_list[j],input_data_list_2[k]))
-        # cv2.imshow("PIC", input_data)
-        # cv2.waitKey(0)
-        # cv2.destroyAllWindows()
-        input_data.resize((1,input_data.size))
 
-        l1 = logistic_function(np.dot(input_data, w1))
-        l2 = logistic_function(np.dot(l1, w2))
+    # 保存训练好的网络
+    saveWeights(Weights[0], "w1")
+    saveWeights(Weights[1], "w2")
 
-        # 输出0是预测同类
-        # 输出1是预测不相同
-        if l2 < 0.6:
-            same_predict = same_predict+1
-        else:
-            not_same_predict = not_same_predict+1
 
-    # **********************************
-    # 输出出现全激活或全不激活情况！！！！！！
-    # ！！！！！！！！！！！！！！！！！！！！
-    # **********************************
-    print("input", input_data)
-    print("pre_l1", (np.dot(input_data, w1)))
-    print("l1", l1)
-    print("l2", l2)
-    print("Right Rate: ", str(not_same_predict/40))
+def getPatch(x, y, patch_size):
+    step_start = 0
+    while step_start < len(x):
+        step_end = step_start + patch_size
+        if step_end < len(x):
+            yield x[step_start:step_end], y[step_start:step_end]
+        step_start = step_end
+
 
 def saveWeights(weights_vars, file_nmae):
     writefile = open((file_nmae + ".txt"), "w")
@@ -157,10 +168,8 @@ def logistic_function(x, derive=False):
         return y
 
 def addLayer(layers, current_layer):
-    weights = np.array[layers[current_layer-1],layers[current_layer]]
-    bias = np.array[current_layer]
+    pass
 
 
 if __name__ == "__main__":
-    # trainNeuralNetwork()
-    predictMatchIndex()
+    trainNeuralNetwork()

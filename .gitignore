@@ -55,3 +55,6 @@ Temporary Items
 *.jpg
 .idea/workspace.xml
 myNNwheel/w1.txt
+# some generated files
+*.txt
+*.csv

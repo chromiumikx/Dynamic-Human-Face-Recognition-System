@@ -9,19 +9,25 @@ import time
 
 from VK_CODE import VK_CODE
 
-def readStandardData(user_name):# 文件夹名字即用户名
-    files_name = os.listdir(user_name + "_data/")
-    StdData = []
-    for file in files_name:
-        img = cv2.imread(user_name + "_data/" + file, cv2.IMREAD_GRAYSCALE)# 以灰度模式读取标准数据
-        StdData.append(img)# 读出结果为一list
+'''
+读取文件夹中所有图片成矩阵，并读取用户id
+三通道转为一通道
+0 ~ 255 转至 -1 ~ +1
+'''
+def readStandardData(user_names):# 文件夹名字即用户名，为列表传入
+    StdFaceMat = []
+    StdUserID = []
+    for user_name in user_names:
+        files_name = os.listdir(user_name + "_data/")
+        with open(user_name + "_label.txt", "r+") as fo:
+            for file in files_name:
+                img = cv2.imread(user_name + "_data/" + file, cv2.IMREAD_GRAYSCALE)# 以灰度模式读取标准数据
+                StdFaceMat.append(img / 128 - 1.0)# 读出结果为一list
 
-    # 打开一个文件
-    fo = open(user_name+"_label.txt", "r+")
-    StdLabel = fo.read()
-    fo.close()
+                # 打开一个文件
+                StdUserID.append(fo.read())
 
-    return StdData, StdLabel
+    return StdFaceMat, StdUserID
 
 def saveData():
     pass

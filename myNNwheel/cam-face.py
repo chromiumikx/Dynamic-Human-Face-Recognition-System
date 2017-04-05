@@ -46,6 +46,7 @@ def getFaces(image_name, face_area):# face_Area是左上角和右下角坐标(x1
         return result
 
 
+# TODO：将图片数据存为矩阵或txt、csv格式，以方便载入
 def saveFacePics(images, directory_name, pic_id = 0):
     directory_name = directory_name + "_data"
     # 所指定目录，若不存在则创建

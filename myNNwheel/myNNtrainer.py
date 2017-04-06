@@ -22,12 +22,19 @@ def trainNeuralNetwork():
         for j in range(len(train_pics)):
             # 输出 [0,1] 表示是相同
             if train_user_id[i] == train_user_id[j]:
+                # 两张图片位置再对调
+                train_labels.append([0, 1.])
                 train_labels.append([0, 1.])
             else:
             # 输出 [1,0] 表示相异
                 train_labels.append([1., 0])
+                train_labels.append([1., 0])
             # 拼接 竖向
             two_pics = np.vstack((train_pics[i], train_pics[j]))
+            # .resize()是一个操作型函数
+            two_pics.resize((1, two_pics.size))
+            train_samples.append(two_pics[0])
+            two_pics = np.vstack((train_pics[j], train_pics[i]))
             # .resize()是一个操作型函数
             two_pics.resize((1, two_pics.size))
             train_samples.append(two_pics[0])
@@ -56,11 +63,14 @@ def trainNeuralNetwork():
     '''
     模型：整个运算过程
     '''
+    patch_size = 400
     learn_rate = 1/100.
     x=np.array(train_samples)
     y=np.array(train_labels)
+    print(x.shape)
+    print(y.shape)
     for j in range(100):
-        for x_, y_ in getPatch(x, y, 100):
+        for x_, y_ in getPatch(x, y, patch_size):
             #正常计算网络各层各节点的值
             #正常计算网络各层各节点的值
             l1=logistic(np.dot(x_, Weights[0]))
@@ -86,11 +96,11 @@ def trainNeuralNetwork():
         #以下是输出误差提示
         if(j%10)==0:
             print("Error"+str(np.mean(np.abs(l2_error))))
-            print("准确：", np.sum(np.argmax(y_, 1) == np.argmax(l2, 1)) / 100.0)
+            print("准确：", np.sum(np.argmax(y_, 1) == np.argmax(l2, 1)) / patch_size)
 
     l1 = logistic(np.dot(x, Weights[0]))
     l2 = logistic(np.dot(l1, Weights[1]))
-    print(np.sum(np.argmax(y, 1) == np.argmax(l2, 1))/1600.)
+    print(np.sum(np.argmax(y, 1) == np.argmax(l2, 1))/y.shape[0])
 
 
     '''
@@ -120,12 +130,12 @@ def trainNeuralNetwork():
     y=np.array(test_labels)
     l1 = logistic(np.dot(x, Weights[0]))
     l2 = logistic(np.dot(l1, Weights[1]))
-    print("Use sb:", np.sum(np.argmax(y, 1) == np.argmax(l2, 1)) / 1600.)
+    print("Use sb:", np.sum(np.argmax(y, 1) == np.argmax(l2, 1)) / y.shape[0])
 
 
     # 保存训练好的网络
-    saveWeights(Weights[0], "w1")
-    saveWeights(Weights[1], "w2")
+    # saveWeights(Weights[0], "w1")
+    # saveWeights(Weights[1], "w2")
 
 
 def getPatch(x, y, patch_size):

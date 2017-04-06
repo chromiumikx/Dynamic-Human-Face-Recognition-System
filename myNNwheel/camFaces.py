@@ -22,13 +22,13 @@ def detectFaces(image_name, face_cascade):
     faces = face_cascade.detectMultiScale(gray, 1.2, 5)#1.2和5是特征的最小、最大检测窗口，它改变检测结果也会改变
     result = []
     for (x,y,width,height) in faces:
-        result.append((x,y,x+width,y+height))
-    return result
+        result.append((x,y,x+width,y+height))# 返回结果为：人脸区域的左上角和右下角点坐标
+    return result # 返回列表或空列表[]
 
 
 # 注意图像数据的存储结构：第一个元素是宽，第二个元素是长
 # 故 切图时索引要注意
-def getFaces(image_name, face_area):# face_Area是左上角和右下角坐标(x1,y1,x2,y2)
+def getFacesMat(image_name, face_area):# face_Area是左上角和右下角坐标(x1,y1,x2,y2)
     if face_area:
         if type(image_name) == "str":
             img = cv2.imread(image_name)
@@ -38,11 +38,11 @@ def getFaces(image_name, face_area):# face_Area是左上角和右下角坐标(x1
         result = []
         for (x1,y1,x2,y2) in face_area:
             # 切图索引：第一个是宽，第二个是长
-            iface = img[y1:y2, x1:x2]
+            iface_mat = img[y1:y2, x1:x2]
             # 标准化图像大小
             # 归一化可尝试64*64，可对比各种分辨率的识别率
-            std_iface = cv2.resize(iface, (64, 64), interpolation=cv2.INTER_CUBIC)
-            result.append(std_iface)
+            std_iface_mat = cv2.resize(iface_mat, (64, 64), interpolation=cv2.INTER_CUBIC)
+            result.append(std_iface_mat)
         return result
 
 
@@ -56,6 +56,7 @@ def saveFacePics(images, directory_name, pic_id = 0):
         os.mkdir(directory_name)
 
     if images:
+        # TODO：改造成可以存储多个人脸为多张图片
         for image in images:
             if image.ndim == 3:
                 gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -79,25 +80,26 @@ def catchUserFace():
         # frame的宽、长、深为：(480, 640, 3)
         # 后续窗口需要建立和调整，需要frame的大小
         _, frame = cap.read()
-        cv2.flip(frame, 1, frame)  # mirror the image
+        cv2.flip(frame, 1, frame)  # mirror the image 翻转图片
 
         face_area = detectFaces(frame, face_cascade)
         for (x1,y1,x2,y2) in face_area:
             cv2.rectangle(frame,(x1,y1),(x2,y2),(100,0,0),1)
 
         i = i+1
-        if i == 6:
-            face = getFaces(frame, face_area)
-            if face:
+        if i == 3:
+            face_mat = getFacesMat(frame, face_area)
+            # ！！！空列表 [] ，在if语句中 等价于 False或None？？？
+            if face_mat:
                 j = j + 1
-                saveFacePics(face, user_name, j)
-                cv2.imshow('Cut Face', face[0])# getFaces()返回值为四维，是多个face的数值矩阵
+                saveFacePics(face_mat, user_name, j)
+                cv2.imshow('Cut Face', face_mat[0])# getFacesMat()返回值为二维列表，是多个face的数值矩阵
 
-        if (i>6) and (i<8):
+        if (i>=3) and (i<=4):
             for (x1, y1, x2, y2) in face_area:
                 cv2.rectangle(frame, (x1, y1), (x2, y2), (255, 0, 0), 1)
 
-        if i > 9:
+        if i > 4:
             i = 0
 
         cv2.imshow('Face Detect',frame)

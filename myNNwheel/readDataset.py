@@ -3,9 +3,7 @@
 import os
 import cv2
 import numpy as np
-import win32api
-import win32con
-import time
+
 
 '''
 读取文件夹中所有图片成矩阵，并读取用户id

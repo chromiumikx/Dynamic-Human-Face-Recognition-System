@@ -157,7 +157,7 @@ def saveWeights(weights_vars, file_nmae):
 
 
 #非线性映射函数，到0~1的范围；及其导数，当deriv为True时
-def nonlin(x, derive=False):
+def nonline(x, derive=False):
     y=np.tanh(x)
     if derive:
         return (1-y**2)

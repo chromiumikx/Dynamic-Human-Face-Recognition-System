@@ -58,3 +58,4 @@ myNNwheel/w1.txt
 # some generated files
 *.txt
 *.csv
+*.pyc

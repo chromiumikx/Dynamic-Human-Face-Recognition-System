@@ -28,6 +28,7 @@ def detectFaces(image_name, face_cascade):
 
 # 注意图像数据的存储结构：第一个元素是宽，第二个元素是长
 # 故 切图时索引要注意
+# 注意：切图时不减少通道，仍然是三通道
 def getFacesMat(image_name, face_area):# face_Area是左上角和右下角坐标(x1,y1,x2,y2)
     if face_area:
         if type(image_name) == "str":
@@ -160,6 +161,6 @@ if __name__ == "__main__":
         window.title('my window')
         window.geometry('600x200')
 
-        b = tk.Button(window, text='move', command=catchUserFace).pack()
+        b = tk.Button(window, text='move', command=showDetection).pack()
 
         window.mainloop()

@@ -9,6 +9,7 @@ import numpy as np
 读取文件夹中所有图片成矩阵，并读取用户id
 三通道转为一通道
 0 ~ 255 转至 -1 ~ +1
+返回：图片矩阵和！！用户id
 '''
 def readStandardData(user_names):# 文件夹名字即用户名，为列表传入
     StdFaceMat = []
@@ -18,8 +19,7 @@ def readStandardData(user_names):# 文件夹名字即用户名，为列表传入
         with open(user_name + "_label.txt", "r+") as fo:
             for file in files_name:
                 img = cv2.imread(user_name + "_data/" + file, cv2.IMREAD_GRAYSCALE)# 以灰度模式读取标准数据
-                StdFaceMat.append(img / 128 - 1.0)# 读出结果为一list，0 ~ 255 转至 -1 ~ +1
-
+                StdFaceMat.append((img-128)/128.)# 读出结果为一list，0 ~ 255 转至 -1 ~ +1
                 # 打开一个文件
                 StdUserID.append(fo.read())
 
@@ -63,7 +63,8 @@ def resizePics():
         cv2.imwrite(ipic, gray)
 
 if __name__ == "__main__":
-    data, _ = readStandardData("ikx")
+    data, _ = readStandardData(["ikx"])
+    print((np.array(data)).shape)
     pinjie = np.vstack((data[0], data[1]))# 竖向拼接
     cv2.imshow("ME", pinjie)
     cv2.waitKey(0)

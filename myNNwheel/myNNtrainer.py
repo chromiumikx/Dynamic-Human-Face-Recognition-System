@@ -24,17 +24,11 @@ def trainNeuralNetwork():
             if train_user_id[i] == train_user_id[j]:
                 # 两张图片位置再对调
                 train_labels.append([0, 1.])
-                train_labels.append([0, 1.])
             else:
             # 输出 [1,0] 表示相异
                 train_labels.append([1., 0])
-                train_labels.append([1., 0])
             # 拼接 竖向
             two_pics = np.vstack((train_pics[i], train_pics[j]))
-            # .resize()是一个操作型函数
-            two_pics.resize((1, two_pics.size))
-            train_samples.append(two_pics[0])
-            two_pics = np.vstack((train_pics[j], train_pics[i]))
             # .resize()是一个操作型函数
             two_pics.resize((1, two_pics.size))
             train_samples.append(two_pics[0])

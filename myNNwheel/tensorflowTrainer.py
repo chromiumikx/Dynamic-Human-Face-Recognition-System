@@ -1,21 +1,9 @@
 import tensorflow as tf
 import numpy as np
-from readDataset import readStandardData
-
+from myNNwheel.readDataset import *
 import os
+from myNNwheel.const_config import *
 
-
-image_size = 64
-my_saver = None
-save_path = "/models/model.ckpt"
-
-def preOperate(img):
-    if img.ndim == 3:
-        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    else:
-        gray = img  # if语句：如果img维度为3，说明不是灰度图，先转化为灰度图gray，如果不为3，也就是2，原图就是灰度图
-
-    return (img-128)/128.
 
 def getPatch(x, y, patch_size):
     step_start = 0
@@ -50,18 +38,7 @@ def reconbineDatasets(directories):
             # .resize()是一个操作型函数
             two_pics.resize((1, two_pics.size))
             train_samples.append(two_pics[0])
-    return train_samples, train_labels
-
-
-dire = ["ikx", "sb", "qin"]
-train_samples, train_labels = reconbineDatasets(dire)
-x = np.array(train_samples)
-y = np.array(train_labels)
-
-dire_test = ["qin"]
-test_samples, test_labels = reconbineDatasets(dire_test)
-x_test = np.array(test_samples)
-y_test = np.array(test_labels)
+    return np.array(train_samples), np.array(train_labels)
 
 
 def run_train(x, y, x_test, y_test, image_size, my_saver, save_path):
@@ -77,52 +54,70 @@ def run_train(x, y, x_test, y_test, image_size, my_saver, save_path):
     graph = tf.Graph()
     with graph.as_default():
         # 占位符，等待传入数据
-        x_ph = tf.placeholder(tf.float32, [None, image_size*image_size*2])
-        y_ph = tf.placeholder(tf.float32, [None, 2])
+        with tf.name_scope("inputs"):
+            x_ph = tf.placeholder(tf.float32, [None, image_size*2*image_size], name="x_input")
+            y_ph = tf.placeholder(tf.float32, [None, 2], name="y_input")
 
-        # 变量，将要训练的参数
+            x_images = tf.reshape(x_ph, [-1,image_size*2,image_size,1], name="x_reshape")
+
         '''
-        此处，表示出，只有一层隐含层，神经元数目为1024
+        整个运算过程
         '''
-        W1 = tf.Variable(tf.zeros([image_size*image_size*2, 1024]))
-        b1 = tf.Variable(tf.zeros([1024]))
+        with tf.name_scope("Convolution_Layer"):
+            h_pool1 = add_conv_pool_layer(1, x_images, 5, 1, 32, tf.nn.relu)
+            h_pool2 = add_conv_pool_layer(2, h_pool1, 5, 32, 64, tf.nn.relu)
+            h_pool2_flat = tf.reshape(h_pool2, [-1, 8*2*8*64])
 
-        W2 = tf.Variable(tf.zeros([1024, 2]))
-        b2 = tf.Variable(tf.zeros([2]))
+        with tf.name_scope("Full_Connect_Layer"):
+            l1 = add_fc_layer(1, h_pool2_flat, 8*2*8*64, 1024, tf.nn.relu)
+            output_prediction = add_fc_layer(2, l1, 1024, 2, None)
 
-        # 激励函数
-        l1 = tf.nn.softmax(tf.matmul(x_ph,W1)+b1)
-        l2_output = tf.nn.softmax(tf.matmul(l1, W2) + b2)
+        #TODO：修改为正则化的cost function
 
-        # 损失熵
-        cross_entropy  = -tf.reduce_sum(y_ph * tf.log(l2_output))
+        with tf.name_scope("loss"):
+            # 损失熵
+            cross_entropy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=y_ph, logits=output_prediction))
 
-        # 训练步长，优化器，目的
-        train_step = tf.train.GradientDescentOptimizer(0.01).minimize(cross_entropy)
+        with tf.name_scope("train"):
+            # 训练步长，优化器，目的
+            train_step = tf.train.GradientDescentOptimizer(1e-4).minimize(cross_entropy)
 
-        correct_prediction = tf.equal(tf.argmax(l2_output, 1), tf.argmax(y_ph, 1))
-        accuracy = tf.reduce_mean(tf.cast(correct_prediction, "float"))
+
+        correct_prediction = tf.equal(tf.argmax(output_prediction, 1), tf.argmax(y_ph, 1))
+        accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
+
+        tf.summary.scalar('accuracy', accuracy)
+
+        # Merge all the summaries and write them out to /train/logs (by default)
+        merged = tf.summary.merge_all()
 
         '''
         保存训练好的模型，在Graph之后保存这个图
         '''
         my_saver = tf.train.Saver()
 
+        sess = tf.InteractiveSession()
+        tf.global_variables_initializer().run()
 
+        # 首先载入之前的训练结果
+        my_saver.restore(sess, save_path)
 
-    with tf.Session(graph=graph) as sess:
-        '''
-        初始化变量Weights、biases
-        '''
-        init = tf.global_variables_initializer()
+        # '''
+        # 初始化变量Weights、biases
+        # '''
+        # init = tf.global_variables_initializer()
+        #
+        # '''
+        # step-2. 实例化计算数据流图：
+        # 1. 生产会话
+        # 2. .run(init) # 初始化运行
+        # '''
+        # sess.run(init)
 
         '''
-        step-2. 实例化计算数据流图：
-        1. 生产会话
-        2. .run(init) # 初始化运行
+        保存变量summary的writer
         '''
-        sess.run(init)
-
+        train_writer = tf.summary.FileWriter('/train/logs', sess.graph)
 
         '''
         step-3. 分批次训练：
@@ -131,24 +126,32 @@ def run_train(x, y, x_test, y_test, image_size, my_saver, save_path):
         3. 设定优化器
         4. 启动会话
         '''
-        for i in range(20):
-            for batch_xs, batch_ys in getPatch(x, y, 100):
+        print("running....")
+        for i in range(10):
+            for batch_xs, batch_ys in getPatch(x, y, 300):
                 # 传入每次的训练数据，字典形式
-                _, accuracy_value = sess.run([train_step, accuracy], feed_dict={x_ph: batch_xs, y_ph: batch_ys})
-            print("Accuracy after step"+str(i)+": ", accuracy_value)
+                _ = sess.run([train_step], feed_dict={x_ph: batch_xs, y_ph: batch_ys})
 
-        print("Whole accuracy: ", sess.run(accuracy, feed_dict={x_ph: x, y_ph: y}))
+            summary_, accuracy_value, output_value = sess.run([merged, accuracy, output_prediction],
+                                                              feed_dict={x_ph: x_test, y_ph: y_test})
+
+            my_log_show(i, "ACC", accuracy_value)
+            # my_log_show(i, "Output", output_value)
+            # my_log_show(i, "y_ph", y_ph_value)
+            # my_log_show(i, "w1", w1_value)
+            # my_log_show(i, "h_pool1", h_pool1_value)
+
 
         '''
         保存模型
         '''
         if os.path.isdir(save_path):
             _save_path = my_saver.save(sess, save_path)
-            print("1:Model Save in: %s"%_save_path)
+            print("1:Model Save in: %s" % _save_path)
         else:
             os.makedirs(save_path)
             _save_path = my_saver.save(sess, save_path)
-            print("2:Model Save in: %s"%_save_path)
+            print("2:Model Save in: %s" % _save_path)
 
 
     '''
@@ -159,74 +162,73 @@ def run_train(x, y, x_test, y_test, image_size, my_saver, save_path):
     # sess.close()
 
 
-
-def run_inference(x_test, y_test, image_size, my_saver, save_path):
-    '''
-    step-1. 定义计算图：
-    1. 输入、输出占位符
-    2. 变量
-    3. 激励函数
-    3. 损失熵
-    4. 优化算法
-    5. 训练步长和初始化
-    '''
-    graph = tf.Graph()
-    with graph.as_default():
-        # 占位符，等待传入数据
-        x_ph = tf.placeholder(tf.float32, [None, image_size*image_size*2])
-        y_ph = tf.placeholder(tf.float32, [None, 2])
-
-        # 变量，将要训练的参数
-        '''
-        此处，表示出，只有一层隐含层，神经元数目为1024
-        '''
-        W1 = tf.Variable(tf.zeros([image_size*image_size*2, 1024]))
-        b1 = tf.Variable(tf.zeros([1024]))
-
-        W2 = tf.Variable(tf.zeros([1024, 2]))
-        b2 = tf.Variable(tf.zeros([2]))
-
-        # 激励函数
-        l1 = tf.nn.softmax(tf.matmul(x_ph,W1)+b1)
-        l2_output = tf.nn.softmax(tf.matmul(l1, W2) + b2)
-
-        correct_prediction = tf.equal(tf.argmax(l2_output, 1), tf.argmax(y_ph, 1))
-        accuracy = tf.reduce_mean(tf.cast(correct_prediction, "float"))
-
-        my_saver = tf.train.Saver()
-
-    with tf.Session(graph=graph) as sess:
-        '''
-        初始化变量Weights、biases
-        '''
-        init = tf.global_variables_initializer()
-
-        '''
-        step-2. 实例化计算数据流图：
-        1. 生产会话
-        2. .run(init) # 初始化运行
-        '''
-        sess.run(init)
-        my_saver.restore(sess, save_path)
-
-        '''
-        step-3. 分批次训练：
-        1. 载入分批数据
-        2. 填充数据
-        3. 设定优化器
-        4. 启动会话
-        '''
-        print("Whole accuracy: ", sess.run(accuracy, feed_dict={x_ph: x_test, y_ph: y_test}))
+def add_fc_layer(layer_num, X, input_scale, layer_depth, active_function=None):
+    with tf.name_scope("fc_layer_"+str(layer_num)):
+        with tf.name_scope("paras"):
+            Weights = tf.Variable(tf.truncated_normal([input_scale, layer_depth], stddev=0.1))
+            biases = tf.Variable(tf.zeros([layer_depth]))
+        if active_function==None:
+            return tf.matmul(X, Weights)+biases
+        else:
+            return active_function(tf.matmul(X, Weights)+biases)
 
 
-    '''
-    step-4. 关闭会话：
-    1. 调用close
-    2. 也可以使用with...as代码块
-    '''
-    # sess.close()
+'''
+卷积层
+'''
+def add_conv_pool_layer(conv_layer_num, X_input, patch_size=5, input_depth=1, conv_depth=32, act=tf.nn.relu):
+    def conv2d(x, W):
+        return tf.nn.conv2d(x, W, strides=[1, 1, 1, 1], padding='SAME')
+    def max_pool_2x2(x):
+        return tf.nn.max_pool(x, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
+    with tf.name_scope("conv_layer_" + str(conv_layer_num)):
+        with tf.name_scope("conv_paras"):
+            conv_weights = tf.Variable(tf.truncated_normal(shape=[patch_size*2, patch_size, input_depth, conv_depth], stddev=0.1))
+            conv_biases = tf.constant(0.1, shape=[conv_depth])
+        h = act(conv2d(X_input, conv_weights) + conv_biases)
+        return max_pool_2x2(h)
+
+
+def variable_summaries(var):
+  """Attach a lot of summaries to a Tensor (for TensorBoard visualization)."""
+  with tf.name_scope('summaries'):
+    mean = tf.reduce_mean(var)
+    tf.summary.scalar('mean', mean)
+    with tf.name_scope('stddev'):
+      stddev = tf.sqrt(tf.reduce_mean(tf.square(var - mean)))
+    tf.summary.scalar('stddev', stddev)
+    tf.summary.scalar('max', tf.reduce_max(var))
+    tf.summary.scalar('min', tf.reduce_min(var))
+    tf.summary.histogram('histogram', var)
+
+
+def calculate_accuracy(output_predictions, labels):
+    std_SAME_labels = []
+    std_DIFF_labels = []
+    for i in range(len(labels)):
+        std_SAME_labels.append([0, 1.])
+        std_DIFF_labels.append([1., 0])
+    std_SAME_labels = np.array(std_SAME_labels)
+    std_DIFF_labels = np.array(std_DIFF_labels)
+
+    # SAME准确率
+    SAME_labels = np.equal(np.argmax(std_SAME_labels, 1), np.argmax(labels, 1))
+    SAME_prediction = np.equal(np.argmax(std_SAME_labels, 1), np.argmax(output_predictions, 1))
+    accuracy_rate = np.mean(np.cast((SAME_labels, SAME_prediction)), np.float32)
+
+    # 召回率（错误的被认为正确）
+    callback_rate = 0
+
+    return accuracy_rate, callback_rate
 
 
 if __name__ == "__main__":
+    my_saver = None
+    save_path = "/models/model.ckpt"
+
+    dire = ["ikx", "sb", "qin"]
+    x, y = reconbineDatasets(dire)
+
+    dire_test = ["ikx", "qin"]
+    x_test, y_test = reconbineDatasets(dire_test)
     run_train(x,y,x_test,y_test,image_size,my_saver,save_path)
-    run_inference(x_test,y_test,image_size,my_saver,save_path)

@@ -7,6 +7,7 @@ import cv2
 import tkinter as tk
 import numpy as np
 from PIL import Image,ImageDraw
+import myNNwheel.const_config
 
 def detectFaces(image_name, face_cascade):
     if type(image_name) == "str":
@@ -42,7 +43,8 @@ def getFacesMat(image_name, face_area):# face_Area是左上角和右下角坐标
             iface_mat = img[y1:y2, x1:x2]
             # 标准化图像大小
             # 归一化可尝试64*64，可对比各种分辨率的识别率
-            std_iface_mat = cv2.resize(iface_mat, (64, 64), interpolation=cv2.INTER_CUBIC)
+            std_iface_mat = cv2.resize(iface_mat, (myNNwheel.const_config.image_size,
+                                                   myNNwheel.const_config.image_size),interpolation=cv2.INTER_CUBIC)
             result.append(std_iface_mat)
         return result
 
@@ -161,6 +163,7 @@ if __name__ == "__main__":
         window.title('my window')
         window.geometry('600x200')
 
-        b = tk.Button(window, text='move', command=showDetection).pack()
+        b_1 = tk.Button(window, text='catchUserFace', command=catchUserFace).pack()
+        b_2 = tk.Button(window, text='showDetection', command=showDetection).pack()
 
         window.mainloop()

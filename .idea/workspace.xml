@@ -3,8 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="77761a31-db34-4e83-bb12-a26e214c8dc9" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/myNNwheel/HumanFaceRecognitionSystem.py" afterPath="$PROJECT_DIR$/myNNwheel/HumanFaceRecognitionSystem.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/myNNwheel/camFaces.py" afterPath="$PROJECT_DIR$/myNNwheel/camFaces.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/myNNwheel/readDataset.py" afterPath="$PROJECT_DIR$/myNNwheel/readDataset.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/myNNwheel/tensorflowTrainer.py" afterPath="$PROJECT_DIR$/myNNwheel/tensorflowTrainer.py" />
     </list>
@@ -21,8 +19,8 @@
       <file leaf-file-name="tensorflowTrainer.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/myNNwheel/tensorflowTrainer.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="263">
-              <caret line="216" column="80" lean-forward="true" selection-start-line="216" selection-start-column="80" selection-end-line="216" selection-end-column="80" />
+            <state relative-caret-position="293">
+              <caret line="238" column="31" lean-forward="true" selection-start-line="238" selection-start-column="31" selection-end-line="238" selection-end-column="31" />
               <folding>
                 <element signature="e#0#23#0" expanded="true" />
               </folding>
@@ -33,9 +31,11 @@
       <file leaf-file-name="camFaces.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/myNNwheel/camFaces.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1095">
-              <caret line="5" column="10" lean-forward="true" selection-start-line="5" selection-start-column="10" selection-end-line="5" selection-end-column="10" />
-              <folding />
+            <state relative-caret-position="1320">
+              <caret line="93" column="35" lean-forward="false" selection-start-line="93" selection-start-column="35" selection-end-line="93" selection-end-column="35" />
+              <folding>
+                <element signature="e#54#63#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -53,8 +53,8 @@
       <file leaf-file-name="readDataset.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/myNNwheel/readDataset.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="269">
-              <caret line="19" column="67" lean-forward="false" selection-start-line="19" selection-start-column="67" selection-end-line="19" selection-end-column="67" />
+            <state relative-caret-position="855">
+              <caret line="59" column="11" lean-forward="false" selection-start-line="59" selection-start-column="0" selection-end-line="60" selection-end-column="0" />
               <folding>
                 <element signature="e#74#83#0" expanded="true" />
               </folding>
@@ -98,9 +98,11 @@
         <option value="$PROJECT_DIR$/myNNwheel/ikx_data/resizethem.py" />
         <option value="$PROJECT_DIR$/myNNwheel/my_board.py" />
         <option value="$PROJECT_DIR$/myNNwheel/HumanFaceRecognitionSystem.py" />
-        <option value="$PROJECT_DIR$/myNNwheel/readDataset.py" />
         <option value="$PROJECT_DIR$/myNNwheel/const_config.py" />
         <option value="$PROJECT_DIR$/myNNwheel/camFaces.py" />
+        <option value="$PROJECT_DIR$/myNNwheel/readDataset.py" />
+        <option value="$PROJECT_DIR$/myNNwheel/ACC_t.txt" />
+        <option value="$PROJECT_DIR$/myNNwheel/ACC.txt" />
         <option value="$PROJECT_DIR$/myNNwheel/tensorflowTrainer.py" />
       </list>
     </option>
@@ -129,6 +131,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scratches" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -157,13 +161,11 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
-      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="settings.editor.selected.configurable" value="configurable.group.language" />
+    <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -381,13 +383,13 @@
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.21156661" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32970452" sideWeight="0.50292826" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.28083208" sideWeight="0.49707174" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.29569092" sideWeight="0.49707174" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39968896" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39968896" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -411,8 +413,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/opencv/test-cam-face-detec.py" />
-    <entry file="file://$PROJECT_DIR$/opencv/test-cam-face-detec.py" />
     <entry file="file://$PROJECT_DIR$/opencv/drawfaces_obama.jpg" />
     <entry file="file://$PROJECT_DIR$/opencv/test-cam-face-detec.py" />
     <entry file="file://$PROJECT_DIR$/SystemDocument.md" />
@@ -536,9 +536,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="15">
           <caret line="1" column="31" lean-forward="false" selection-start-line="1" selection-start-column="31" selection-end-line="1" selection-end-column="31" />
-          <folding>
-            <element signature="e#0#10#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -546,8 +543,15 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-750">
           <caret line="13" column="20" lean-forward="true" selection-start-line="13" selection-start-column="20" selection-end-line="13" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/myNNwheel/camFaces.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1320">
+          <caret line="93" column="35" lean-forward="false" selection-start-line="93" selection-start-column="35" selection-end-line="93" selection-end-column="35" />
           <folding>
-            <element signature="e#0#23#0" expanded="false" />
+            <element signature="e#54#63#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -562,26 +566,34 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/myNNwheel/readDataset.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="269">
-          <caret line="19" column="67" lean-forward="false" selection-start-line="19" selection-start-column="67" selection-end-line="19" selection-end-column="67" />
+        <state relative-caret-position="855">
+          <caret line="59" column="11" lean-forward="false" selection-start-line="59" selection-start-column="0" selection-end-line="60" selection-end-column="0" />
           <folding>
             <element signature="e#74#83#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/myNNwheel/camFaces.py">
+    <entry file="file://$PROJECT_DIR$/myNNwheel/ACC_t.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1095">
-          <caret line="5" column="10" lean-forward="true" selection-start-line="5" selection-start-column="10" selection-end-line="5" selection-end-column="10" />
+        <state relative-caret-position="0">
+          <caret line="0" column="842" lean-forward="true" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="843" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/myNNwheel/ACC.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="1037" lean-forward="true" selection-start-line="0" selection-start-column="1037" selection-end-line="0" selection-end-column="1037" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/myNNwheel/tensorflowTrainer.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="263">
-          <caret line="216" column="80" lean-forward="true" selection-start-line="216" selection-start-column="80" selection-end-line="216" selection-end-column="80" />
+        <state relative-caret-position="293">
+          <caret line="238" column="31" lean-forward="true" selection-start-line="238" selection-start-column="31" selection-end-line="238" selection-end-column="31" />
           <folding>
             <element signature="e#0#23#0" expanded="true" />
           </folding>

@@ -57,7 +57,7 @@ def readWeights(weights_path):
     f = open(weights_path, "r")
     temp = f.readlines()
     weights = []
-    tags = []
+    # tags = []
     for i in temp:
         weights.append([float(k) for k in ((i.strip()).split())])
     f.close()

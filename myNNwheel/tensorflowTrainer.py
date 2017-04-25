@@ -3,6 +3,7 @@ import numpy as np
 from myNNwheel.readDataset import *
 import os
 from myNNwheel.const_config import *
+import matplotlib.pyplot as plt
 
 
 def getPatch(x, y, patch_size):
@@ -127,7 +128,16 @@ def run_train(x, y, x_test, y_test, image_size, my_saver, save_path):
         4. 启动会话
         '''
         print("running....")
-        for i in range(10):
+
+        # 所指定目录，若不存在则创建
+        try:
+            os.listdir(os.getcwd()).index("ACC.txt")
+        except ValueError:
+            f_ACC = open("ACC.txt", "a+")
+
+        f_ACC = open("ACC.txt", "a+")
+
+        for i in range(1):
             for batch_xs, batch_ys in getPatch(x, y, 300):
                 # 传入每次的训练数据，字典形式
                 _ = sess.run([train_step], feed_dict={x_ph: batch_xs, y_ph: batch_ys})
@@ -136,11 +146,13 @@ def run_train(x, y, x_test, y_test, image_size, my_saver, save_path):
                                                               feed_dict={x_ph: x_test, y_ph: y_test})
 
             my_log_show(i, "ACC", accuracy_value)
+            f_ACC.write(" "+str(accuracy_value)+" ")
             # my_log_show(i, "Output", output_value)
             # my_log_show(i, "y_ph", y_ph_value)
             # my_log_show(i, "w1", w1_value)
             # my_log_show(i, "h_pool1", h_pool1_value)
 
+        f_ACC.close()
 
         '''
         保存模型
@@ -204,20 +216,18 @@ def variable_summaries(var):
 
 def calculate_accuracy(output_predictions, labels):
     std_SAME_labels = []
-    std_DIFF_labels = []
     for i in range(len(labels)):
         std_SAME_labels.append([0, 1.])
-        std_DIFF_labels.append([1., 0])
     std_SAME_labels = np.array(std_SAME_labels)
-    std_DIFF_labels = np.array(std_DIFF_labels)
 
     # SAME准确率
-    SAME_labels = np.equal(np.argmax(std_SAME_labels, 1), np.argmax(labels, 1))
-    SAME_prediction = np.equal(np.argmax(std_SAME_labels, 1), np.argmax(output_predictions, 1))
-    accuracy_rate = np.mean(np.cast((SAME_labels, SAME_prediction)), np.float32)
+    SAME_labels = np.equal(np.argmax(std_SAME_labels, 1), np.argmax(labels, 1))# 返回label是1的地方 为True
+    SAME_prediction = np.equal(np.argmax(std_SAME_labels, 1), np.argmax(output_predictions, 1))# 返回output是1的地方为True
+    accuracy_rate = np.sum(np.cast(np.logical_and(SAME_labels, SAME_prediction), np.float32))/(1.0*np.sum(np.cast(SAME_labels, np.float32)))
 
     # 召回率（错误的被认为正确）
-    callback_rate = 0
+    DIFF_labels = np.equal(np.argmin(std_SAME_labels, 1), np.argmax(labels, 1))# 返回label是0的地方 为True
+    callback_rate = np.sum(np.cast(np.logical_and(DIFF_labels, SAME_prediction), np.float32))/(1.0*np.sum(np.cast(DIFF_labels, np.float32)))
 
     return accuracy_rate, callback_rate
 
@@ -232,3 +242,13 @@ if __name__ == "__main__":
     dire_test = ["ikx", "qin"]
     x_test, y_test = reconbineDatasets(dire_test)
     run_train(x,y,x_test,y_test,image_size,my_saver,save_path)
+
+    f = open("ACC.txt", "r")
+    temp = f.readlines()
+    ACC = []
+    for i in temp:
+        ACC.append([float(k) for k in ((i.strip()).split())])
+    f.close()
+
+    plt.plot(ACC[0])
+    plt.show()

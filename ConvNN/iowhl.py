@@ -21,3 +21,12 @@ def load_pics_as_mats(dir_names):
                 StdUserID.append(_id)
 
     return StdFaceMat, StdUserID
+
+
+def getPatch(x, y, patch_size):
+    step_start = 0
+    while step_start < len(x):
+        step_end = step_start + patch_size
+        if step_end < len(x):
+            yield x[step_start:step_end], y[step_start:step_end]
+        step_start = step_end

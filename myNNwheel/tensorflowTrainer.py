@@ -42,7 +42,7 @@ def reconbineDatasets(directories):
     return np.array(train_samples), np.array(train_labels)
 
 
-def run_train(x, y, x_test, y_test, image_size, my_saver, save_path):
+def run_train(x, y, x_test, y_test, image_size, my_saver, save_path, is_load, result_path, learning_rate):
     '''
     step-1. 定义计算图：
     1. 输入、输出占位符
@@ -66,12 +66,14 @@ def run_train(x, y, x_test, y_test, image_size, my_saver, save_path):
         '''
         with tf.name_scope("Convolution_Layer"):
             h_pool1 = add_conv_pool_layer(1, x_images, 5, 1, 32, tf.nn.relu)
-            h_pool2 = add_conv_pool_layer(2, h_pool1, 5, 32, 64, tf.nn.relu)
+            h_pool1_dropout = tf.nn.dropout(h_pool1, keep_prob=0.9)
+            h_pool2 = add_conv_pool_layer(2, h_pool1_dropout, 5, 32, 64, tf.nn.relu)
             h_pool2_flat = tf.reshape(h_pool2, [-1, 8*2*8*64])
 
         with tf.name_scope("Full_Connect_Layer"):
             l1 = add_fc_layer(1, h_pool2_flat, 8*2*8*64, 1024, tf.nn.relu)
-            output_prediction = add_fc_layer(2, l1, 1024, 2, None)
+            l1_dropout = tf.nn.dropout(l1, keep_prob=0.5)
+            output_prediction = add_fc_layer(2, l1_dropout, 1024, 2, None)
 
         #TODO：修改为正则化的cost function
 
@@ -81,7 +83,7 @@ def run_train(x, y, x_test, y_test, image_size, my_saver, save_path):
 
         with tf.name_scope("train"):
             # 训练步长，优化器，目的
-            train_step = tf.train.GradientDescentOptimizer(1e-4).minimize(cross_entropy)
+            train_step = tf.train.GradientDescentOptimizer(learning_rate).minimize(cross_entropy)
 
 
         correct_prediction = tf.equal(tf.argmax(output_prediction, 1), tf.argmax(y_ph, 1))
@@ -101,7 +103,8 @@ def run_train(x, y, x_test, y_test, image_size, my_saver, save_path):
         tf.global_variables_initializer().run()
 
         # 首先载入之前的训练结果
-        my_saver.restore(sess, save_path)
+        if is_load:
+            my_saver.restore(sess, save_path)
 
         # '''
         # 初始化变量Weights、biases
@@ -131,21 +134,22 @@ def run_train(x, y, x_test, y_test, image_size, my_saver, save_path):
 
         # 所指定目录，若不存在则创建
         try:
-            os.listdir(os.getcwd()).index("ACC.txt")
+            os.listdir(os.getcwd()).index(result_path)
         except ValueError:
-            f_ACC = open("ACC.txt", "a+")
+            f_ACC = open(result_path, "a+")
 
-        f_ACC = open("ACC.txt", "a+")
+        f_ACC = open(result_path, "a+")
 
-        for i in range(1):
+        for i in range(max_steps):
             for batch_xs, batch_ys in getPatch(x, y, 300):
                 # 传入每次的训练数据，字典形式
-                _ = sess.run([train_step], feed_dict={x_ph: batch_xs, y_ph: batch_ys})
+                _, acc_training = sess.run([train_step, accuracy], feed_dict={x_ph: batch_xs, y_ph: batch_ys})
 
             summary_, accuracy_value, output_value = sess.run([merged, accuracy, output_prediction],
                                                               feed_dict={x_ph: x_test, y_ph: y_test})
 
-            my_log_show(i, "ACC", accuracy_value)
+            my_log_show(i, "ACC_test", accuracy_value)
+            my_log_show(i, "ACC_training", acc_training)
             f_ACC.write(" "+str(accuracy_value)+" ")
             # my_log_show(i, "Output", output_value)
             # my_log_show(i, "y_ph", y_ph_value)
@@ -174,7 +178,7 @@ def run_train(x, y, x_test, y_test, image_size, my_saver, save_path):
     # sess.close()
 
 
-def add_fc_layer(layer_num, X, input_scale, layer_depth, active_function=None):
+def add_fc_layer(layer_num, X, input_scale, layer_depth, active_function=None, keep_prob=1.0):
     with tf.name_scope("fc_layer_"+str(layer_num)):
         with tf.name_scope("paras"):
             Weights = tf.Variable(tf.truncated_normal([input_scale, layer_depth], stddev=0.1))
@@ -188,7 +192,7 @@ def add_fc_layer(layer_num, X, input_scale, layer_depth, active_function=None):
 '''
 卷积层
 '''
-def add_conv_pool_layer(conv_layer_num, X_input, patch_size=5, input_depth=1, conv_depth=32, act=tf.nn.relu):
+def add_conv_pool_layer(conv_layer_num, X_input, patch_size=5, input_depth=1, conv_depth=32, act=tf.nn.relu, keep_prob=1.0):
     def conv2d(x, W):
         return tf.nn.conv2d(x, W, strides=[1, 1, 1, 1], padding='SAME')
     def max_pool_2x2(x):
@@ -234,21 +238,49 @@ def calculate_accuracy(output_predictions, labels):
 
 if __name__ == "__main__":
     my_saver = None
-    save_path = "/models/model.ckpt"
+    save_path = "/models/model_test/model.ckpt"
+    is_load = False
+
+    result_type_1 = "ACC_test"
+    save_add_end = "_"+str(learning_rate)+"_"+str(image_size)
+    result_path = result_type_1+save_add_end+".txt"
 
     dire = ["ikx", "sb", "qin"]
     x, y = reconbineDatasets(dire)
 
-    dire_test = ["ikx", "qin"]
+    dire_test = ["ikxx", "ei"]
     x_test, y_test = reconbineDatasets(dire_test)
-    run_train(x,y,x_test,y_test,image_size,my_saver,save_path)
+    run_train(x, y, x_test, y_test, image_size, my_saver, save_path, is_load, result_path, learning_rate)
 
-    f = open("ACC.txt", "r")
+    f = open(result_path, "r")
     temp = f.readlines()
     ACC = []
     for i in temp:
         ACC.append([float(k) for k in ((i.strip()).split())])
     f.close()
-
-    plt.plot(ACC[0])
+    print(len(ACC[0]))
+    #
+    # f_1 = open("ACC_0.001_32.txt", "r")
+    # temp = f_1.readlines()
+    # ACC_1 = []
+    # for i in temp:
+    #     ACC_1.append([float(k) for k in ((i.strip()).split())])
+    # f_1.close()
+    # print(len(ACC_1[0]))
+    #
+    # f_2 = open("ACC_test_0.01_32.txt", "r")
+    # temp = f_2.readlines()
+    # ACC_2 = []
+    # for i in temp:
+    #     ACC_2.append([float(k) for k in ((i.strip()).split())])
+    # f_2.close()
+    # print(len(ACC_2[0]))
+    #
+    plt.plot(ACC[0], "-o", label="ACC-0.001")
+    # # plt.plot(ACC_1[0], "-,", label="ACC-0.001")
+    # plt.plot(ACC_2[0], "-s", label="ACC-0.01")
+    plt.legend()  # 展示图例
+    plt.xlabel('After Steps')  # 给 x 轴添加标签
+    plt.ylabel('Accuracy')  # 给 y 轴添加标签
+    plt.title('Accuracy Changing on TestDataSet')  # 添加图形标题
     plt.show()

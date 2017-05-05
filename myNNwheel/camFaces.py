@@ -10,8 +10,9 @@ from PIL import Image,ImageDraw
 import myNNwheel.const_config
 
 def detectFaces(image_name, face_cascade):
-    if type(image_name) == "str":
+    if type(image_name) == str:
         img = cv2.imread(image_name)
+        print("TTT")
     else:
         img = image_name
 
@@ -20,7 +21,7 @@ def detectFaces(image_name, face_cascade):
     else:
         gray = img #if语句：如果img维度为3，说明不是灰度图，先转化为灰度图gray，如果不为3，也就是2，原图就是灰度图
 
-    faces = face_cascade.detectMultiScale(gray, 1.2, 5)#1.2和5是特征的最小、最大检测窗口，它改变检测结果也会改变
+    faces = face_cascade.detectMultiScale(gray, 1.3, 5)#1.2和5是特征的最小、最大检测窗口，它改变检测结果也会改变
     result = []
     for (x,y,width,height) in faces:
         result.append((x,y,x+width,y+height))# 返回结果为：人脸区域的左上角和右下角点坐标
@@ -161,9 +162,20 @@ if __name__ == "__main__":
         # 实时刷新
         window = tk.Tk()
         window.title('my window')
-        window.geometry('600x200')
+        window.geometry('200x100')
 
         b_1 = tk.Button(window, text='catchUserFace', command=catchUserFace).pack()
         b_2 = tk.Button(window, text='showDetection', command=showDetection).pack()
 
         window.mainloop()
+
+        # face_cascade = cv2.CascadeClassifier("haarcascade_frontalface_alt.xml")
+        # print(type("test_faces_raw.jpg"))
+        # face_areas = detectFaces("test_faces_raw.jpg", face_cascade)
+        # gray_mat = cv2.imread("test_faces_raw.jpg")
+        # for (x1, y1, x2, y2) in face_areas:
+        #     cv2.rectangle(gray_mat, (x1, y1), (x2, y2), (0, 0, 0), 1)
+        #
+        # cv2.imwrite("test_faces_lock.jpg", gray_mat)
+        # cv2.imshow('Face Detect', gray_mat)
+        # cv2.destroyAllWindows()

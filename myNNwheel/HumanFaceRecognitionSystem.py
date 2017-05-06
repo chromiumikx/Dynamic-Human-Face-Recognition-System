@@ -6,44 +6,50 @@ import cv2
 from myNNwheel.const_config import *
 
 
-my_saver = None
-save_path = "/models/model.ckpt"
-
-
-def reconbineWithStandard(new_pic_mat, user_pics_mat):
-    true_labels = []
-    two_pic = []
-    two_pics = []
-    for i in range(len(user_pics_mat)):
-        true_labels.append([0, 1.])
-        two_pic = np.vstack((new_pic_mat, user_pics_mat[i]))
-        two_pic.resize((1, two_pic.size))
-        two_pics.append(two_pic[0])
-
-        true_labels.append([0, 1.])
-        two_pic = np.vstack((user_pics_mat[i], new_pic_mat))
-        two_pic.resize((1, two_pic.size))
-        two_pics.append(two_pic[0])
-    return np.array(two_pics), np.array(true_labels)
-
 def preOperate(img):
     if img.ndim == 3:
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     else:
         gray = img  # if语句：如果img维度为3，说明不是灰度图，先转化为灰度图gray，如果不为3，也就是2，原图就是灰度图
 
-    return (img-128)/256.+0.5
+    cv2.imshow("GGGGG", gray)
+    return (gray-128)/256.+0.5
+
+
+def add_fc_layer(layer_num, X_input, input_scale, layer_depth, active_function=None, keep_prob=1.0):
+    with tf.name_scope("fc_layer_"+str(layer_num)):
+        with tf.name_scope("paras"):
+            Weights = tf.Variable(tf.truncated_normal([input_scale, layer_depth], stddev=0.1))
+            biases = tf.Variable(tf.zeros([layer_depth]))
+        if active_function==None:
+            return tf.matmul(X_input, Weights)+biases
+        else:
+            return active_function(tf.matmul(X_input, Weights)+biases)
+
+
+def add_conv_pool_layer(conv_layer_num, X_input, patch_size=5, input_depth=1, conv_depth=32, active_function=None, keep_prob=1.0):
+    def conv2d(x, W):
+        return tf.nn.conv2d(x, W, strides=[1, 1, 1, 1], padding='SAME')
+    def max_pool_2x2(x):
+        return tf.nn.max_pool(x, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
+    with tf.name_scope("conv_layer_" + str(conv_layer_num)):
+        with tf.name_scope("conv_paras"):
+            conv_weights = tf.Variable(tf.truncated_normal(shape=[patch_size, patch_size, input_depth, conv_depth], stddev=0.1))
+            conv_biases = tf.constant(0.1, shape=[conv_depth])
+        h = active_function(conv2d(X_input, conv_weights) + conv_biases)
+        return max_pool_2x2(h)
 
 
 if __name__ == "__main__":
     cap = cv2.VideoCapture(0)
     face_cascade = cv2.CascadeClassifier("haarcascade_frontalface_alt.xml")
+    pre_saver = None
 
     user_name = input("Input your name:")
     user_id = input("Input your ID:")
 
-    user_pics_mat, _ = readStandardData([user_name])
-    i = 0
+    lock_face_count = 0
+    collect_face_count = 0
 
     '''
     定义计算图，避免调用函数每次重新定义
@@ -51,68 +57,85 @@ if __name__ == "__main__":
     graph = tf.Graph()
     with graph.as_default():
         # 占位符，等待传入数据
-        x_ph = tf.placeholder(tf.float32, [None, image_size * image_size * 2])
-        y_ph = tf.placeholder(tf.float32, [None, 2])
+        with tf.name_scope("inputs"):
+            x_ph = tf.placeholder(tf.float32, [None, image_size*image_size], name="x_input")
+            y_ph = tf.placeholder(tf.float32, [None, 2], name="y_input")
 
-        # 变量，将要训练的参数
-        '''
-        此处，表示出，只有一层隐含层，神经元数目为1024
-        '''
-        W1 = tf.Variable(tf.zeros([image_size*image_size*2, 1024]))
-        b1 = tf.Variable(tf.zeros([1024]))
+            x_images = tf.reshape(x_ph, [-1,image_size,image_size,1], name="x_reshape")
 
-        W2 = tf.Variable(tf.zeros([1024, 2]))
-        b2 = tf.Variable(tf.zeros([2]))
+        with tf.name_scope("Convolution_Layer"):
+            h_pool1 = add_conv_pool_layer(1, x_images, 5, 1, 32, tf.nn.relu)
+            h_pool1_dropout = tf.nn.dropout(h_pool1, keep_prob=1)
+            h_pool2 = add_conv_pool_layer(2, h_pool1_dropout, 5, 32, 64, tf.nn.relu)
+            h_pool2_flat = tf.reshape(h_pool2, [-1, 8*8*64])
 
-        # 激励函数
-        l1 = tf.nn.softmax(tf.matmul(x_ph, W1) + b1)
-        l2_output = tf.nn.softmax(tf.matmul(l1, W2) + b2)
+        keep_prob = tf.placeholder(tf.float32)
+        with tf.name_scope("Full_Connect_Layer"):
+            l1 = add_fc_layer(1, h_pool2_flat, 8*8*64, 1024, tf.nn.relu)
+            l1_dropout = tf.nn.dropout(l1, keep_prob)
+            output_prediction = add_fc_layer(2, l1_dropout, 1024, 2, None)
 
-        correct_prediction = tf.equal(tf.argmax(l2_output, 1), tf.argmax(y_ph, 1))
-        accuracy = tf.reduce_mean(tf.cast(correct_prediction, "float"))
+        correct_prediction = tf.equal(tf.argmax(output_prediction, 1), tf.argmax(y_ph, 1))
+        accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 
         pre_saver = tf.train.Saver()
 
-    with tf.Session(graph=graph) as sess:
-        pre_saver.restore(sess, save_path)
+        sess = tf.InteractiveSession()
+        tf.global_variables_initializer().run()
 
+        pre_saver.restore(sess, net_save_path)
+
+        wait_faces = []
+        y_std = []
         while(True):
             # Capture frame-by-frame
             # frame的宽、长、深为：(480, 640, 3)
             # 后续窗口需要建立和调整，需要frame的大小
             _, frame = cap.read()
             cv2.flip(frame, 1, frame)  # mirror the image 翻转图片
-            if frame.ndim == 3:
-                gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-            else:
-                gray = frame  # if语句：如果img维度为3，说明不是灰度图，先转化为灰度图gray，如果不为3，也就是2，原图就是灰度图
-
             face_area = detectFaces(frame, face_cascade)
-            for (x1,y1,x2,y2) in face_area:
-                cv2.rectangle(frame,(x1,y1),(x2,y2),(100,0,0),1)
-
             face_mat = getFacesMat(frame, face_area)
             # ！！！空列表 [] ，在if语句中 等价于 False或None？？？
             # getFacesMat 返回列表，故取第一个即可
-            accuracy_value = 0
-            if face_mat:
-                # getFaceMat返回三通道矩阵，故需要变成灰度
-                if face_mat[0].ndim == 3:
-                    gray_face_mat = preOperate(cv2.cvtColor(face_mat[0], cv2.COLOR_BGR2GRAY))
-                    i = i+1
-                x_wait_inference, y_true_labels = reconbineWithStandard(gray_face_mat, user_pics_mat)
-                l2_output_value, accuracy_value = sess.run([l2_output,accuracy], feed_dict={x_ph: x_wait_inference, y_ph: y_true_labels})
-            else:
-                print("No Face")
+            for (x1,y1,x2,y2) in face_area:
+                cv2.rectangle(frame,(x1,y1),(x2,y2),(100,0,0),1)
 
-            if accuracy_value>0.7:
-                print("Match Person in: ", accuracy_value)
-                print(l2_output_value)
-                for (x1, y1, x2, y2) in face_area:
-                    cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 1)
+            if face_mat and (lock_face_count == 0):
+                lock_face_count = lock_face_count + 1
+
+            if lock_face_count == 1:
+                gray_face_mat = preOperate(face_mat[0])
+                wait_faces.append(gray_face_mat)
+                cv2.imshow('Face', face_mat[0])
+                y_std.append([0, 1.])
+                collect_face_count = collect_face_count + 1
+
+            if collect_face_count == 10:
+                print("Start Re......")
+                lock_face_count = 0
+                collect_face_count = 0
+
                 accuracy_value = 0
-            else:
-                print("Not Match!!!!!!")
+                x_tt = []
+                y_tt = []
+                for i_pic in wait_faces:
+                    i_pic.resize((1, image_size * image_size))
+                    x_tt.append(i_pic[0])  # resize后只取第一行，否则取的是二维数组，维度大小（1，1024）的
+                x_tt = np.array(x_tt)
+                y_std = np.array(y_std)
+                [accuracy_value] = sess.run([accuracy], feed_dict={x_ph: x_tt, y_ph: y_std, keep_prob: 1})
+                wait_faces = []
+                y_std = []
+
+                print(accuracy_value)
+                if accuracy_value>0.7:
+                    print("Match Person in: ", accuracy_value)
+                    # print(output_prediction_val)
+                    for (x1, y1, x2, y2) in face_area:
+                        cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 1)
+                    accuracy_value = 0
+                else:
+                    print("Not Match!!!!!!")
 
             cv2.imshow('Face Detect',frame)
 

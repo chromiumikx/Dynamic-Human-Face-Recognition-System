@@ -19,19 +19,19 @@ def detectFaces(image_name, face_cascade):
     if img.ndim == 3:
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     else:
-        gray = img #if语句：如果img维度为3，说明不是灰度图，先转化为灰度图gray，如果不为3，也就是2，原图就是灰度图
+        gray = img # if语句：如果img维度为3，说明不是灰度图，先转化为灰度图gray，如果不为3，也就是2，原图就是灰度图
 
-    faces = face_cascade.detectMultiScale(gray, 1.3, 5)#1.2和5是特征的最小、最大检测窗口，它改变检测结果也会改变
+    faces = face_cascade.detectMultiScale(gray, 1.3, 5) # 1.3和5是特征的最小、最大检测窗口，它改变检测结果也会改变
     result = []
     for (x,y,width,height) in faces:
-        result.append((x,y,x+width,y+height))# 返回结果为：人脸区域的左上角和右下角点坐标
+        result.append((x,y,x+width,y+height)) # 返回结果为：人脸区域的左上角和右下角点坐标
     return result # 返回列表或空列表[]
 
 
 # 注意图像数据的存储结构：第一个元素是宽，第二个元素是长
 # 故 切图时索引要注意
 # 注意：切图时不减少通道，仍然是三通道
-def getFacesMat(image_name, face_area):# face_Area是左上角和右下角坐标(x1,y1,x2,y2)
+def getFacesMat(image_name, face_area): # face_Area是左上角和右下角坐标(x1,y1,x2,y2)
     if face_area:
         if type(image_name) == "str":
             img = cv2.imread(image_name)
@@ -84,7 +84,7 @@ def catchUserFace():
         # frame的宽、长、深为：(480, 640, 3)
         # 后续窗口需要建立和调整，需要frame的大小
         _, frame = cap.read()
-        cv2.flip(frame, 1, frame)  # mirror the image 翻转图片
+        cv2.flip(frame, 1, frame) # mirror the image 翻转图片
 
         face_area = detectFaces(frame, face_cascade)
         for (x1,y1,x2,y2) in face_area:
@@ -97,7 +97,7 @@ def catchUserFace():
             if face_mat:
                 j = j + 1
                 saveFacePics(face_mat, user_name, j)
-                cv2.imshow('Cut Face', face_mat[0])# getFacesMat()返回值为二维列表，是多个face的数值矩阵
+                cv2.imshow('Cut Face', face_mat[0]) # getFacesMat()返回值为二维列表，是多个face的数值矩阵
 
         if (i>=3) and (i<=4):
             for (x1, y1, x2, y2) in face_area:
@@ -108,7 +108,7 @@ def catchUserFace():
 
         cv2.imshow('Face Detect',frame)
 
-        if (cv2.waitKey(1) & 0xFF == ord('q')) or (j == 20):# j：录取照片的数量
+        if (cv2.waitKey(1) & 0xFF == ord('q')) or (j == 20): # j：录取照片的数量
             break
 
     # 生成一个label.txt标记本文件夹的用户
@@ -132,7 +132,7 @@ def showDetection():
         # frame的宽、长、深为：(480, 640, 3)
         # 后续窗口需要建立和调整，需要frame的大小
         _, frame = cap.read()
-        cv2.flip(frame, 1, frame)  # mirror the image
+        cv2.flip(frame, 1, frame) # mirror the image
 
         # 识别人脸输出坐标
         result = detectFaces(frame, face_cascade)

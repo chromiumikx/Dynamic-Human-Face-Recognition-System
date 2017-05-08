@@ -133,11 +133,11 @@ def train(x, y, x_test, y_test, is_load=False, user_name=None):
         '''
         if os.path.isdir(net_save_path):
             _save_path = my_saver.save(sess, net_save_path)
-            print("1:Model Save in: %s" % _save_path)
+            print("Added Model Save in: %s" % _save_path)
         else:
             os.makedirs(net_save_path)
             _save_path = my_saver.save(sess, net_save_path)
-            print("2:Model Save in: %s" % _save_path)
+            print("New Model Save in: %s" % _save_path)
 
 
 def interfere(x, y, user_name):

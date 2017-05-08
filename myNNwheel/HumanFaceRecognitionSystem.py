@@ -1,9 +1,9 @@
-import tensorflow as tf
-import numpy as np
-from myNNwheel.readDataset import readStandardData
-from  myNNwheel.camFaces import *
 import cv2
+import tensorflow as tf
+
+from  ConvNN.cam_faces import *
 from myNNwheel.const_config import *
+from myNNwheel.readDataset import readStandardData
 
 
 def preOperate(img):
@@ -41,12 +41,13 @@ def add_conv_pool_layer(conv_layer_num, X_input, patch_size=5, input_depth=1, co
 
 
 if __name__ == "__main__":
-    cap = cv2.VideoCapture(0)
     face_cascade = cv2.CascadeClassifier("haarcascade_frontalface_alt.xml")
     pre_saver = None
 
     user_name = input("Input your name:")
-    user_id = input("Input your ID:")
+    user_id = input("Input your id:")
+
+    cap = cv2.VideoCapture(0)
 
     lock_face_count = 0
     collect_face_count = 0
@@ -83,10 +84,9 @@ if __name__ == "__main__":
         sess = tf.InteractiveSession()
         tf.global_variables_initializer().run()
 
+        net_save_path = "/models/model_" + user_name + ".ckpt"
         pre_saver.restore(sess, net_save_path)
 
-        wait_faces = []
-        y_std = []
         while(True):
             # Capture frame-by-frame
             # frame的宽、长、深为：(480, 640, 3)
@@ -95,6 +95,7 @@ if __name__ == "__main__":
             cv2.flip(frame, 1, frame)  # mirror the image 翻转图片
             face_area = detectFaces(frame, face_cascade)
             face_mat = getFacesMat(frame, face_area)
+            saveFacePics(face_mat, "temp", 0)
             # ！！！空列表 [] ，在if语句中 等价于 False或None？？？
             # getFacesMat 返回列表，故取第一个即可
             for (x1,y1,x2,y2) in face_area:
@@ -104,10 +105,6 @@ if __name__ == "__main__":
                 lock_face_count = lock_face_count + 1
 
             if lock_face_count == 1:
-                gray_face_mat = preOperate(face_mat[0])
-                wait_faces.append(gray_face_mat)
-                cv2.imshow('Face', face_mat[0])
-                y_std.append([0, 1.])
                 collect_face_count = collect_face_count + 1
 
             if collect_face_count == 10:
@@ -116,16 +113,16 @@ if __name__ == "__main__":
                 collect_face_count = 0
 
                 accuracy_value = 0
+                x_pics, y_labels = readStandardData(["temp"])
                 x_tt = []
                 y_tt = []
-                for i_pic in wait_faces:
+                for i_pic in x_pics:
                     i_pic.resize((1, image_size * image_size))
                     x_tt.append(i_pic[0])  # resize后只取第一行，否则取的是二维数组，维度大小（1，1024）的
+                    y_tt.append([0, 1.])
                 x_tt = np.array(x_tt)
-                y_std = np.array(y_std)
-                [accuracy_value] = sess.run([accuracy], feed_dict={x_ph: x_tt, y_ph: y_std, keep_prob: 1})
-                wait_faces = []
-                y_std = []
+                y_tt = np.array(y_tt)
+                [accuracy_value] = sess.run([accuracy], feed_dict={x_ph: x_tt, y_ph: y_tt, keep_prob: 1})
 
                 print(accuracy_value)
                 if accuracy_value>0.7:
@@ -133,8 +130,12 @@ if __name__ == "__main__":
                     # print(output_prediction_val)
                     for (x1, y1, x2, y2) in face_area:
                         cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 1)
+                        font = cv2.FONT_HERSHEY_SIMPLEX
+                        cv2.putText(frame, 'MATCH', (x1, y1), font, 2, (0, 255, 0), 2)
                     accuracy_value = 0
                 else:
+                    font = cv2.FONT_HERSHEY_SIMPLEX
+                    cv2.putText(frame, 'XXXXX', (x1, y1), font, 2, (0, 0, 255), 2)
                     print("Not Match!!!!!!")
 
             cv2.imshow('Face Detect',frame)

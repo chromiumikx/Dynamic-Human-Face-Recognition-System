@@ -59,7 +59,7 @@ def add_conv_pool_layer(conv_layer_num, X_input, patch_size=5, input_depth=1, co
         return max_pool_2x2(h)
 
 
-def train(x, y, x_test, y_test, is_load=False):
+def train(x, y, x_test, y_test, is_load=False, user_name=None):
     graph = tf.Graph()
     with graph.as_default():
         # 占位符，等待传入数据
@@ -101,6 +101,7 @@ def train(x, y, x_test, y_test, is_load=False):
         sess = tf.InteractiveSession()
         tf.global_variables_initializer().run()
 
+        net_save_path = "/models/model_" + user_name + ".ckpt"
         # 首先载入之前的训练结果
         if is_load:
             my_saver.restore(sess, net_save_path)
@@ -139,7 +140,7 @@ def train(x, y, x_test, y_test, is_load=False):
             print("2:Model Save in: %s" % _save_path)
 
 
-def interfere(x, y):
+def interfere(x, y, user_name):
     graph = tf.Graph()
     with graph.as_default():
         # 占位符，等待传入数据
@@ -172,6 +173,7 @@ def interfere(x, y):
         sess = tf.InteractiveSession()
         tf.global_variables_initializer().run()
 
+        net_save_path = "/models/model_" + user_name + ".ckpt"
         my_saver.restore(sess, net_save_path)
 
         # 预测
@@ -181,16 +183,31 @@ def interfere(x, y):
 
 
 if __name__ == "__main__":
-    # x, y, x_test, y_test = reconbine_dataset(["ikx"], ["non_1"]) # 不能以字符串输入，要以列表形式输入
-    # train(x, y, x_test, y_test, False)
+    while True:
+        target = input("Train or Interfere? (T/I):")
+        if target=="exit":
+            break
 
-    x_pics, y_labels = load_pics_as_mats(["ikxx", "iii", "lll"])
-    x_tt = []
-    y_tt = []
-    for i_pic in x_pics:
-        i_pic.resize((1, image_size*image_size))
-        x_tt.append(i_pic[0]) # resize后只取第一行，否则取的是二维数组，维度大小（1，1024）的
-        y_tt.append([0, 1.])
-    x_tt = np.array(x_tt)
-    y_tt = np.array(y_tt)
-    interfere(x_tt, y_tt)
+        if (target == "T") or (target == "t"):
+            target = "Train"
+            user_name = input("Input your name:")
+            x, y, x_test, y_test = reconbine_dataset([user_name], ["non_1"]) # 不能以字符串输入，要以列表形式输入
+            train(x, y, x_test, y_test, False, user_name)
+
+        if (target == "I") or (target == "i"):
+            target = "Interfere"
+            model_user_name = input("Input User Model name:") # 决定要使用的用户模型
+            user_name = input("Input test name:") # 决定要加载的用户数据T
+            x_pics, y_labels = load_pics_as_mats([user_name])
+            x_tt = []
+            y_tt = []
+            for i_pic in x_pics:
+                i_pic.resize((1, image_size*image_size))
+                x_tt.append(i_pic[0]) # resize后只取第一行，否则取的是二维数组，维度大小（1，1024）的
+                y_tt.append([0, 1.])
+            x_tt = np.array(x_tt)
+            y_tt = np.array(y_tt)
+            interfere(x_tt, y_tt, model_user_name)
+
+        print(target+" Done.")
+    print("Exit.")

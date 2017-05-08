@@ -10,6 +10,8 @@ import matplotlib.pyplot as plt
 def load_pics_as_mats(dir_names):
     StdFaceMat = []
     StdUserID = []
+    _p = os.getcwd()
+    os.chdir(_p+"/users_data")
     for user_name in dir_names:
         files_name = os.listdir(user_name + "_data/")
         with open(user_name + "_label.txt", "r+") as fo:
@@ -24,6 +26,8 @@ def load_pics_as_mats(dir_names):
                 StdFaceMat.append(img) # 读出结果为一list，0 ~ 255 转至 -1 ~ +1
                 # 打开一个文件
                 StdUserID.append(_id)
+
+    os.chdir(_p)
 
     return StdFaceMat, StdUserID
 
@@ -49,12 +53,14 @@ def show_info(fig_name, y_label, y, y_types, dim=1):
 
 
 def save_face_pics(images, user_name, pic_id = 0):
-    user_name = user_name + "_data"
+    _p = os.getcwd()
+    os.chdir(_p+"/users_data")
+    user_name_a = user_name + "_data"
     # 所指定目录，若不存在则创建
     try:
-        os.listdir(os.getcwd()).index(user_name)
+        os.listdir(os.getcwd()).index(user_name_a)
     except ValueError:
-        os.mkdir(user_name)
+        os.mkdir(user_name_a)
 
     if images:
         # Done：改造成可以存储多个人脸为多张图片
@@ -65,7 +71,15 @@ def save_face_pics(images, user_name, pic_id = 0):
                 gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
             else:
                 gray = image  # if语句：如果img维度为3，说明不是灰度图，先转化为灰度图gray，如果不为3，也就是2，原图就是灰度图
-            cv2.imwrite(user_name + "\\face_" + str(pic_id) + "_" + str(i) + ".jpg", gray)
+            cv2.imwrite(user_name_a + "/face_" + str(pic_id) + "_" + str(i) + ".jpg", gray)
+
+            # 生成一个label.txt标记本文件夹的用户
+            # 打开一个文件
+            fo = open(user_name + "_label.txt", "w+")
+            fo.write("0" + "\n")
+            fo.close()
+
+    os.chdir(_p)
 
 
 def sort_out_non_user_pics():

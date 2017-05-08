@@ -16,26 +16,23 @@ import numpy as np
 此处修补cv2.imread()函数，
 使其输出转换为float类型
 '''
-def load_pics(file_name, read_mode):
-    return ((cv2.imread(file_name, read_mode))/1.) # 以灰度模式读取标准数据，且将其浮点化
-
-def readStandardData(user_names):  # 文件夹名字即用户名，为列表传入
+def readStandardData(dir_names):  # 文件夹名字即用户名，为列表传入
     StdFaceMat = []
     StdUserID = []
-    for user_name in user_names:
+    for user_name in dir_names:
         files_name = os.listdir(user_name + "_data/")
         with open(user_name + "_label.txt", "r+") as fo:
-            id_ = fo.read()
+            _id = fo.read()
             for file in files_name:
                 '''
                 imread返回numpy.uint8大小的数据，无符号，减法操作容易溢出
                 故：除以1.0，变成float类型
                 '''
-                img = load_pics(user_name + "_data/" + file, cv2.IMREAD_GRAYSCALE) # 以灰度模式读取标准数据
+                img = ((cv2.imread(user_name + "_data/" + file, cv2.IMREAD_GRAYSCALE))/1.) # 以灰度模式读取标准数据
                 img = (img-128)/256.+0.5 # 归一化
-                StdFaceMat.append(img)  # 读出结果为一list，0 ~ 255 转至 -1 ~ +1
+                StdFaceMat.append(img) # 读出结果为一list，0 ~ 255 转至 -1 ~ +1
                 # 打开一个文件
-                StdUserID.append(id_)
+                StdUserID.append(_id)
 
     return StdFaceMat, StdUserID
 

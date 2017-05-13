@@ -101,3 +101,8 @@ def sort_out_non_user_pics():
             face_mat = ConvNN.detection_whl.get_faces_mat(img, face_area)
             save_face_pics(face_mat, "non_user", i)
             print("Saved pic "+str(i))
+
+
+if __name__ == "__main__":
+    a, b = load_pics_as_mats(["temp"])
+    print(a[1])

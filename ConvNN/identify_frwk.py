@@ -1,9 +1,10 @@
 import cv2
 import tensorflow as tf
 
-from  ConvNN.cam_faces import *
+from  ConvNN.cam_faces_whl import *
 from ConvNN.para_config import *
 from ConvNN.io_whl import *
+from ConvNN.detection_whl import *
 
 
 def preOperate(img):
@@ -92,7 +93,7 @@ if __name__ == "__main__":
             face_area = detect_faces(frame, face_cascade)
             face_mat = get_faces_mat(frame, face_area)
             save_face_pics(face_mat, "temp", collect_face_count)
-            print(collect_face_count)
+            # print(collect_face_count)
             # ！！！空列表 [] ，在if语句中 等价于 False或None？？？
             # getFacesMat 返回列表，故取第一个即可
             for (x1,y1,x2,y2) in face_area:

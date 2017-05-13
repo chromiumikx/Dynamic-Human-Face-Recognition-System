@@ -6,7 +6,6 @@ import os
 import cv2
 import tkinter as tk
 import numpy as np
-from PIL import Image,ImageDraw
 from ConvNN.para_config import *
 from ConvNN.io_whl import *
 from ConvNN.detection_whl import *

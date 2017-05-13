@@ -90,8 +90,9 @@ def showDetection():
 
 
 
-if __name__ == "__main__":
+# if __name__ == "__main__":
 
+def collect_user_data():
         # GUI
         # tk实现
         # 实时刷新

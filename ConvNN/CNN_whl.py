@@ -182,10 +182,11 @@ def interfere(x, y, user_name):
         print("ACC: "+str(accuracy_val))
 
 
-if __name__ == "__main__":
+# if __name__ == "__main__":
+def run_CNN():
     while True:
         target = input("Train or Interfere? (T/I):")
-        if target=="exit":
+        if (target=="q") or (target=="Q"):
             break
 
         if (target == "T") or (target == "t"):

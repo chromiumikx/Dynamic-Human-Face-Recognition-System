@@ -1,54 +1,43 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
-"""
-ZetCode PyQt5 tutorial 
-
-In this example, we position two push
-buttons in the bottom-right corner 
-of the window. 
-
-author: Jan Bodnar
-website: zetcode.com 
-last edited: January 2015
-"""
-
 import sys
-from PyQt5.QtWidgets import (QWidget, QPushButton, 
-    QHBoxLayout, QVBoxLayout, QApplication)
+from mainfrwk import *
+
+class MainWindow(Ui_Form):
+    def __init__(self, parent=None):
+        super(MainWindow, self).__init__(parent)
+        self.setupUi(self)
 
 
-class Example(QWidget):
-
+class Example(Ui_Form):
+    
     def __init__(self):
         super().__init__()
 
-        self.initUI()
+    def showColor(self):
+        col = QColorDialog.getColor()
+        if col.isValid():
+            self.setStyleSheet(self.style+"#window{background:%s}" % col.name())
+    def showDialog(self):
+        text, ok = QInputDialog.getText(self, '对话框', 
+            '请输入你的名字:')
+        
+        if ok:
+            self.linet1.setText(str(text))
+    def showFile(self):
+        fname = QFileDialog.getOpenFileName(self, 'Open file', '/home')
 
+        if fname[0]:
+            f = open(fname[0], 'r')
 
-    def initUI(self):
-
-        okButton = QPushButton("OK")
-        cancelButton = QPushButton("Cancel")
-
-        hbox = QHBoxLayout()
-        hbox.addStretch(0)
-        hbox.addWidget(okButton)
-        hbox.addWidget(cancelButton)
-
-        vbox = QVBoxLayout()
-        vbox.addStretch(0)
-        vbox.addLayout(hbox)
-
-        self.setLayout(vbox)    
-
-        self.setGeometry(300, 300, 300, 150)
-        self.setWindowTitle('Buttons')    
-        self.show()
-
-
+            with f:
+                data = f.readline()
+                self.linet1.setText(data) 
+        
+        
 if __name__ == '__main__':
-
-    app = QApplication(sys.argv)
-    ex = Example()
+    app = QtWidgets.QApplication(sys.argv)
+    mainWindow = MainWindow()
+    mainWindow.show()
     sys.exit(app.exec_())

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 '''
 数据输入输出部分集成于此
 '''
@@ -85,8 +86,8 @@ def save_face_pics(images, user_name, pic_id = 0):
 def sort_out_non_user_pics():
     import ConvNN.detection_whl
     face_cascade = cv2.CascadeClassifier("haarcascade_frontalface_alt.xml")
-    source_folder = "F:/Learn/GraduationProject/DataSets/lfw/" # 源文件目录
-    target_folder = "F:/Cache/GitHub\Dynamic-Human-Face-Recognition-System/ConvNN/non_user_data" # 将要更改成的工作目录
+    source_folder = "E:/Learn/GraduationProject/DataSets/lfw/" # 源文件目录
+    target_folder = "E:/Cache/GitHub/Dynamic-Human-Face-Recognition-System/ConvNN/users_data/non_user_data" # 将要更改成的工作目录
 
     # 读取所有的图片
     non_users = os.listdir(source_folder)
@@ -103,6 +104,24 @@ def sort_out_non_user_pics():
             print("Saved pic "+str(i))
 
 
+def expand_dataset(data_dir):
+    _datas = os.listdir(data_dir)
+
+    i=0
+    for _i_data in _datas:
+        i=i+1
+        img = cv2.imread(data_dir+"/"+_i_data, cv2.IMREAD_GRAYSCALE)
+        img = img*0.6+100
+        cv2.imwrite(data_dir + "/expand_face_" + str(i) + ".jpg", np.floor(img))
+
+
+    # 扩大数据集：增加各级亮度
+
+    # 扩大数据集：增加噪声
+
+
+
 if __name__ == "__main__":
-    a, b = load_pics_as_mats(["temp"])
-    print(a[1])
+    # a, b = load_pics_as_mats(["temp"])
+    # print(a[1])
+    expand_dataset('E:/Cache/GitHub/Dynamic-Human-Face-Recognition-System/ConvNN/users_data/ikx_data')

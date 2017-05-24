@@ -144,7 +144,7 @@ if __name__ == "__main__":
                     collect_face_count = 0
 
                     x_pics, y_labels = load_pics_as_mats(["temp"])
-                    print(len(x_pics))
+                    # print(len(x_pics))
                     x_tt = []
                     y_tt = []
                     for i_pic in x_pics:

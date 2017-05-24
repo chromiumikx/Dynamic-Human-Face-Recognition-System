@@ -53,8 +53,26 @@ def show_info(fig_name, y_label, y, y_types, dim=1):
     plt.show()
 
 
-def show_conv_layers():
-    pass
+def show_conv_layers(h_pool1_val):
+    conv_depth = h_pool1_val.shape[3]
+    for jj in range(h_pool1_val.shape[0]):
+        k = 0
+        _t_hstk = ()
+        for i in range(int(conv_depth/8)):
+            t_k = ()
+            for j in range(8):
+                _val = h_pool1_val[jj, :, :, k]
+                _re_val = cv2.resize(_val, (80, 80), interpolation=cv2.INTER_CUBIC)
+                t_k = t_k + (_re_val,)
+                k = k + 1
+            _hstk_8 = np.hstack(t_k)
+            print(_hstk_8.shape)
+            _t_hstk = _t_hstk + (_hstk_8,)
+        vhstk = np.vstack(_t_hstk)
+
+        cv2.imshow("IMG", vhstk)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
 
 
 def save_face_pics(images, user_name, pic_id = 0):

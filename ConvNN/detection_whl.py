@@ -15,7 +15,7 @@ def detect_faces(image_name, face_cascade):
     else:
         gray = img  # if语句：如果img维度为3，说明不是灰度图，先转化为灰度图gray，如果不为3，也就是2，原图就是灰度图
 
-    faces = face_cascade.detectMultiScale(gray, 1.3, 5)  # 1.2和5是特征的最小、最大检测窗口，它改变检测结果也会改变
+    faces = face_cascade.detectMultiScale(gray, 1.3, 4)  # 特征的最小、最大检测窗口，它改变检测结果也会改变
     result = []
     for (x, y, width, height) in faces:
         result.append((x, y, x + width, y + height))  # 返回结果为：人脸区域的左上角和右下角点坐标

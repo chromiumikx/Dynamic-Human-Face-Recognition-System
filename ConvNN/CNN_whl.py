@@ -1,9 +1,11 @@
+import cv2
 import tensorflow as tf
 import numpy as np
 from ConvNN.io_whl import *
 from ConvNN.para_config import *
 
 
+# 两种组织训练集和测试集的形式
 def reconbine_dataset(p_user_dir, n_user_dir):
     p_pics, p_user_id = load_pics_as_mats(p_user_dir)
     n_pics, n_user_id = load_pics_as_mats(n_user_dir)
@@ -31,6 +33,37 @@ def reconbine_dataset(p_user_dir, n_user_dir):
     for jj in range(10):
         test_samples.append(train_samples.pop())
         test_labels.append(train_labels.pop())
+
+    return np.array(train_samples), np.array(train_labels), np.array(test_samples), np.array(test_labels)
+
+
+def _reconbine_dataset(p_user_dir, n_user_dir):
+    p_pics, p_user_id = load_pics_as_mats(p_user_dir)
+    n_pics, n_user_id = load_pics_as_mats(n_user_dir)
+
+    all_datas = []
+    all_labels = []
+    train_samples = []
+    train_labels = []
+    test_samples = []
+    test_labels = []
+    pic_size = image_size*image_size
+
+    for i in p_pics:
+        i.resize((1, pic_size))
+        all_datas.append(i[0]) # resize后只取第一行，否则取的是二维数组，维度大小（1，1024）的
+        all_labels.append([0, 1.])
+
+    for j in n_pics:
+        j.resize((1, pic_size))
+        all_datas.append(j[0])
+        all_labels.append([1.0, 0])
+
+    while(len(all_datas)>2):
+        train_samples.append(all_datas.pop())
+        train_labels.append(all_labels.pop())
+        test_samples.append(all_datas.pop())
+        test_labels.append(all_labels.pop())
 
     return np.array(train_samples), np.array(train_labels), np.array(test_samples), np.array(test_labels)
 
@@ -121,12 +154,15 @@ def train(x, y, x_test, y_test, is_load=False, user_name=None):
                 log_loss.append(loss)
                 # print("OUT:" + str(output_prediction_val))
 
+            # feed测试集的时候，keep_prob为1
+            # 对于训练集，则是0.5或别的，这主要是为了让训练的网络有泛化的能力
             accuracy_value = sess.run([accuracy], feed_dict={x_ph: x_test, y_ph: y_test, keep_prob: 1})
             print("ACC of test in "+str(i)+str(accuracy_value))
             log_acc.append(accuracy_value)
 
         show_info("LOSS", "LOSS", [log_loss], ["NtoN"])
         show_info("ACC", "ACC", [log_acc], ["NtoN"])
+
 
         '''
         保存模型
@@ -181,8 +217,26 @@ def interfere(x, y, user_name):
         print("OUT: "+str(output_prediction_val))
         print("ACC: "+str(accuracy_val))
 
+        [h_pool1_val] = sess.run([h_pool1], feed_dict={x_ph: x, y_ph: y, keep_prob: 1})
+        k = 0
+        _t_hstk = ()
+        for i in range(4):
+            t_k = ()
+            for j in range(8):
+                _val = h_pool1_val[0, :, :, k]
+                _re_val = cv2.resize(_val, (100, 100), interpolation=cv2.INTER_CUBIC)
+                t_k = t_k+(_re_val,)
+                k = k+1
+            _hstk_8 = np.hstack(t_k)
+            print(_hstk_8.shape)
+            _t_hstk = _t_hstk+(_hstk_8,)
+        vhstk = np.vstack(_t_hstk)
 
-# if __name__ == "__main__":
+        cv2.imshow("IMG", vhstk)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
+
+
 def run_CNN():
     while True:
         target = input("Train or Interfere? (T/I):")
@@ -196,7 +250,7 @@ def run_CNN():
             # 作为非用户人脸的参照系，主要由手动挑选的正面人脸组成
             # 目的是为了保持，正的用户人脸集和负的非用户人脸集，在倾斜度、光照、姿态、发型、背景性质（未考虑，可能有影响）等保持一致，只有人脸部分不一致
             # 以避免神经网络学习到错误的性质
-            x, y, x_test, y_test = reconbine_dataset([user_name], ["new_non_2"]) # 不能以字符串输入，要以列表形式输入
+            x, y, x_test, y_test = _reconbine_dataset([user_name], [non_user_dir]) # 不能以字符串输入，要以列表形式输入
             train(x, y, x_test, y_test, False, user_name)
 
         if (target == "I") or (target == "i"):
@@ -216,3 +270,7 @@ def run_CNN():
 
         print(target+" Done.")
     print("Exit.")
+
+
+if __name__ == "__main__":
+    run_CNN()

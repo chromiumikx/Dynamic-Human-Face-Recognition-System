@@ -5,3 +5,4 @@ conv_layers = 2
 fc_layers = 2
 dropout_keep_prob = 0.5
 max_steps = 150
+non_user_dir = "new_non_2"

@@ -134,7 +134,8 @@ if __name__ == "__main__":
                 if face_mat and (lock_face_count == 0):
                     lock_face_count = lock_face_count + 1
 
-                if lock_face_count == 1:
+                # 保证收集到20张待检测人脸，face_mat为空[]时，collect_face_count不加一
+                if face_mat and  lock_face_count == 1:
                     collect_face_count = collect_face_count + 1
 
                 if collect_face_count == 20:
@@ -143,6 +144,7 @@ if __name__ == "__main__":
                     collect_face_count = 0
 
                     x_pics, y_labels = load_pics_as_mats(["temp"])
+                    print(len(x_pics))
                     x_tt = []
                     y_tt = []
                     for i_pic in x_pics:
@@ -165,6 +167,12 @@ if __name__ == "__main__":
                             cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 0, 255), 1)
                             font = cv2.FONT_HERSHEY_SIMPLEX
                             cv2.putText(frame, 'XXXXX', (x1+10, y1), font, 2, (0, 0, 255), 2)
+
+                    # 每次重新录取待检测新用户数据前删除已经检测过的数据
+                    _p = os.getcwd()
+                    _temp_datas_fn = os.listdir(_p + "/users_data/temp_data")
+                    for _it in _temp_datas_fn:
+                        os.remove(_p+"/users_data/temp_data/"+_it)
 
                 cv2.imshow('Face Detect',frame)
 

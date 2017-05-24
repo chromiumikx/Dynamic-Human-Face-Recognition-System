@@ -53,19 +53,19 @@ def show_info(fig_name, y_label, y, y_types, dim=1):
     plt.show()
 
 
-def show_convlayers():
+def show_conv_layers():
     pass
 
 
 def save_face_pics(images, user_name, pic_id = 0):
     _p = os.getcwd()
     os.chdir(_p+"/users_data")
-    user_name_a = user_name + "_data"
+    user_name_add = user_name + "_data"
     # 所指定目录，若不存在则创建
     try:
-        os.listdir(os.getcwd()).index(user_name_a)
+        os.listdir(os.getcwd()).index(user_name_add)
     except ValueError:
-        os.mkdir(user_name_a)
+        os.mkdir(user_name_add)
 
     if images:
         # Done：改造成可以存储多个人脸为多张图片
@@ -76,7 +76,7 @@ def save_face_pics(images, user_name, pic_id = 0):
                 gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
             else:
                 gray = image  # if语句：如果img维度为3，说明不是灰度图，先转化为灰度图gray，如果不为3，也就是2，原图就是灰度图
-            cv2.imwrite(user_name_a + "/face_" + str(pic_id) + "_" + str(i) + ".jpg", gray)
+            cv2.imwrite(user_name_add + "/face_" + str(pic_id) + "_" + str(i) + ".jpg", gray)
 
             # 生成一个label.txt标记本文件夹的用户
             # 打开一个文件
@@ -115,17 +115,19 @@ def expand_dataset(data_dir):
     for _i_data in _datas:
         i=i+1
         img = cv2.imread(data_dir+"/"+_i_data, cv2.IMREAD_GRAYSCALE)
-        img = img*0.6+100
-        cv2.imwrite(data_dir + "/expand_face_" + str(i) + ".jpg", np.floor(img))
 
+        # 扩大数据集：增加各级亮度
+        img_1 = img*0.8+50
+        cv2.imwrite(data_dir + "/expand_white_face_" + str(i) + ".jpg", np.floor(img_1))
 
-    # 扩大数据集：增加各级亮度
-
-    # 扩大数据集：增加噪声
+        # 扩大数据集：增加噪声
+        rd_noise = np.random.randint(0,50,size=img.shape)
+        img_2 = img*0.8+rd_noise
+        cv2.imwrite(data_dir + "/expand_noise_face_" + str(i) + ".jpg", np.floor(img_1))
 
 
 
 if __name__ == "__main__":
-    # a, b = load_pics_as_mats(["temp"])
-    # print(a[1])
-    expand_dataset('E:/Cache/GitHub/Dynamic-Human-Face-Recognition-System/ConvNN/users_data/ikx_data')
+    a, b = load_pics_as_mats(["temp"])
+    print(a[1])
+    # expand_dataset('E:/Cache/GitHub/Dynamic-Human-Face-Recognition-System/ConvNN/users_data/ikx_data')

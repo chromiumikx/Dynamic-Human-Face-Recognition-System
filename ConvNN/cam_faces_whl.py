@@ -50,6 +50,8 @@ def catchUserFace():
         cv2.imshow('Face Detect',frame)
 
         if (cv2.waitKey(1) & 0xFF == ord('q')) or (j == 20): # j：录取照片的数量
+            # 录取完用户数据后，自动增加数据集一次
+            expand_dataset('E:/Cache/GitHub/Dynamic-Human-Face-Recognition-System/ConvNN/users_data/'+user_name+'_data')
             break
 
     # When everything done, release the capture
@@ -90,8 +92,6 @@ def showDetection():
 
 
 
-# if __name__ == "__main__":
-
 def collect_user_data():
         # GUI
         # tk实现
@@ -115,3 +115,7 @@ def collect_user_data():
         # cv2.imwrite("test_faces_lock.jpg", gray_mat)
         # cv2.imshow('Face Detect', gray_mat)
         # cv2.destroyAllWindows()
+
+
+if __name__ == "__main__":
+    collect_user_data()

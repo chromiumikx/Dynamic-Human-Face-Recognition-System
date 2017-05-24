@@ -192,7 +192,11 @@ def run_CNN():
         if (target == "T") or (target == "t"):
             target = "Train"
             user_name = input("Input your name:")
-            x, y, x_test, y_test = reconbine_dataset([user_name], ["non_1"]) # 不能以字符串输入，要以列表形式输入
+            # 增加整理的另外一个数据集non_2
+            # 作为非用户人脸的参照系，主要由手动挑选的正面人脸组成
+            # 目的是为了保持，正的用户人脸集和负的非用户人脸集，在倾斜度、光照、姿态、发型、背景性质（未考虑，可能有影响）等保持一致，只有人脸部分不一致
+            # 以避免神经网络学习到错误的性质
+            x, y, x_test, y_test = reconbine_dataset([user_name], ["new_non_2"]) # 不能以字符串输入，要以列表形式输入
             train(x, y, x_test, y_test, False, user_name)
 
         if (target == "I") or (target == "i"):

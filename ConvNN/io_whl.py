@@ -53,6 +53,10 @@ def show_info(fig_name, y_label, y, y_types, dim=1):
     plt.show()
 
 
+def show_convlayers():
+    pass
+
+
 def save_face_pics(images, user_name, pic_id = 0):
     _p = os.getcwd()
     os.chdir(_p+"/users_data")

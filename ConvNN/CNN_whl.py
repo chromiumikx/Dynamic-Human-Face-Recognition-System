@@ -198,7 +198,7 @@ def train(x, y, x_test, y_test, is_load=False, user_name=None):
 
         # 保存已注册的用户记录
         with open("registered_users_name.txt", "a+") as f:
-            f.write(user_name+" ")
+            f.write(" "+user_name)
 
         print("MODEL TRAINING DONE.")
 

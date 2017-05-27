@@ -50,12 +50,14 @@ if __name__ == "__main__":
 
     from ConvNN.cam_faces_whl import *
     from ConvNN.CNN_whl import *
+    run_command = {'1': collect_user_data, '2': run_CNN}
     while True:
         command = input("Do you want?(1.insert user data 2.train my model):")
-        if command == "1":
-            collect_user_data()
-        if command == "2":
-            run_CNN()
+
+        try:
+            run_command[command]()
+        except KeyError:
+            print("No This command.\n")
 
         if (command =="q") or (command =="Q"):
             print("Quit.\n")
@@ -68,7 +70,10 @@ if __name__ == "__main__":
     print("Human Face Recognition System v0.9")
     user_name = input("Input your name:")
     user_id = input("Input your id:")
-    net_save_path = "/models/model_" + user_name + ".ckpt"
+    model_name = load_registred_user()
+    net_save_path = {}
+    for i_nodel_name in model_name:
+        net_save_path[i_nodel_name] = "/models/model_" + i_nodel_name + ".ckpt"
     try:
         os.listdir("/models/").index("model_" + user_name + ".ckpt")
         in_user_list = 1
@@ -112,7 +117,6 @@ if __name__ == "__main__":
 
 
 
-            pre_saver.restore(sess, net_save_path)
             cap = cv2.VideoCapture(0)
             lock_face_count = 0
             collect_face_count = 0
@@ -153,20 +157,24 @@ if __name__ == "__main__":
                         y_tt.append([0, 1.])
                     x_tt = np.array(x_tt)
                     y_tt = np.array(y_tt)
-                    accuracy_value = 0 # 重置
-                    [accuracy_value] = sess.run([accuracy], feed_dict={x_ph: x_tt, y_ph: y_tt, keep_prob: 1})
+                    accuracy_value = {} # 重置
+                    print(accuracy_value)
+                    for i_nodel_name in model_name:
+                        pre_saver.restore(sess, net_save_path[i_nodel_name])
+                        [accuracy_value[i_nodel_name]] = sess.run([accuracy], feed_dict={x_ph: x_tt, y_ph: y_tt, keep_prob: 1})
 
-                    print("Accuracy is: "+str(accuracy_value))
-                    if accuracy_value>0.9:
-                        for (x1, y1, x2, y2) in face_area:
-                            cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 1)
-                            font = cv2.FONT_HERSHEY_SIMPLEX
-                            cv2.putText(frame, 'MATCH', (x1+10, y1), font, 2, (0, 255, 0), 2)
-                    else:
-                        for (x1, y1, x2, y2) in face_area:
-                            cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 0, 255), 1)
-                            font = cv2.FONT_HERSHEY_SIMPLEX
-                            cv2.putText(frame, 'XXXXX', (x1+10, y1), font, 2, (0, 0, 255), 2)
+                    print("Accuracy is: ")
+                    print(accuracy_value)
+                    # if accuracy_value>0.9:
+                    #     for (x1, y1, x2, y2) in face_area:
+                    #         cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 1)
+                    #         font = cv2.FONT_HERSHEY_SIMPLEX
+                    #         cv2.putText(frame, 'MATCH', (x1+10, y1), font, 2, (0, 255, 0), 2)
+                    # else:
+                    #     for (x1, y1, x2, y2) in face_area:
+                    #         cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 0, 255), 1)
+                    #         font = cv2.FONT_HERSHEY_SIMPLEX
+                    #         cv2.putText(frame, 'XXXXX', (x1+10, y1), font, 2, (0, 0, 255), 2)
 
                     # 每次重新录取待检测新用户数据前删除已经检测过的数据
                     _p = os.getcwd()

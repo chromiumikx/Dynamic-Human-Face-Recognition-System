@@ -147,15 +147,14 @@ def expand_dataset(data_dir):
 def load_registred_user():
     _dir = "registered_users_name.txt"
     with open(_dir, "r") as f:
-        temp = f.readlines()
-        users = []
-        # tags = []
-        for i in temp:
-            users.append([k for k in ((i.strip()).split())])
+        temp = f.readline()
+        users = [k for k in temp.split()]
         return users
 
 
 if __name__ == "__main__":
-    a, b = load_pics_as_mats(["temp"])
-    print(a[1])
+    # a, b = load_pics_as_mats(["temp"])
+    # print(a[1])
     # expand_dataset('E:/Cache/GitHub/Dynamic-Human-Face-Recognition-System/ConvNN/users_data/ikx_data')
+    users = load_registred_user()
+    print(users)

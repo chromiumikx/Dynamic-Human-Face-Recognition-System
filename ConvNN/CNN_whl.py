@@ -6,7 +6,7 @@ from ConvNN.para_config import *
 
 
 # 两种组织训练集和测试集的形式
-def reconbine_dataset(p_user_dir, n_user_dir):
+def _reconbine_dataset(p_user_dir, n_user_dir):
     p_pics, p_user_id = load_pics_as_mats(p_user_dir)
     n_pics, n_user_id = load_pics_as_mats(n_user_dir)
 
@@ -37,7 +37,7 @@ def reconbine_dataset(p_user_dir, n_user_dir):
     return np.array(train_samples), np.array(train_labels), np.array(test_samples), np.array(test_labels)
 
 
-def _reconbine_dataset(p_user_dir, n_user_dir):
+def reconbine_dataset(p_user_dir, n_user_dir):
     p_pics, p_user_id = load_pics_as_mats(p_user_dir)
     n_pics, n_user_id = load_pics_as_mats(n_user_dir)
 
@@ -66,6 +66,27 @@ def _reconbine_dataset(p_user_dir, n_user_dir):
         test_labels.append(all_labels.pop())
 
     return np.array(train_samples), np.array(train_labels), np.array(test_samples), np.array(test_labels)
+
+
+def build_graph():
+    # 占位符，等待传入数据
+    with tf.name_scope("inputs"):
+        x_ph = tf.placeholder(tf.float32, [None, image_size * image_size], name="x_input")
+        y_ph = tf.placeholder(tf.float32, [None, 2], name="y_input")
+
+        x_images = tf.reshape(x_ph, [-1, image_size, image_size, 1], name="x_reshape")
+
+    with tf.name_scope("Convolution_Layer"):
+        h_pool1 = add_conv_pool_layer(1, x_images, 5, 1, 32, tf.nn.relu)
+        h_pool1_dropout = tf.nn.dropout(h_pool1, keep_prob=1)
+        h_pool2 = add_conv_pool_layer(2, h_pool1_dropout, 5, 32, 64, tf.nn.relu)
+        h_pool2_flat = tf.reshape(h_pool2, [-1, 8 * 8 * 64])
+
+    keep_prob = tf.placeholder(tf.float32)
+    with tf.name_scope("Full_Connect_Layer"):
+        l1 = add_fc_layer(1, h_pool2_flat, 8 * 8 * 64, 1024, tf.nn.relu)
+        l1_dropout = tf.nn.dropout(l1, keep_prob)
+        output_prediction = add_fc_layer(2, l1_dropout, 1024, 2, None)
 
 
 def add_fc_layer(layer_num, X_input, input_scale, layer_depth, active_function=None, keep_prob=1.0):
@@ -175,6 +196,12 @@ def train(x, y, x_test, y_test, is_load=False, user_name=None):
             _save_path = my_saver.save(sess, net_save_path)
             print("New Model Save in: %s" % _save_path)
 
+        # 保存已注册的用户记录
+        with open("registered_users_name.txt", "a+") as f:
+            f.write(user_name+" ")
+
+        print("MODEL TRAINING DONE.")
+
 
 def interfere(x, y, user_name):
     graph = tf.Graph()
@@ -234,7 +261,7 @@ def run_CNN():
             # 作为非用户人脸的参照系，主要由手动挑选的正面人脸组成
             # 目的是为了保持，正的用户人脸集和负的非用户人脸集，在倾斜度、光照、姿态、发型、背景性质（未考虑，可能有影响）等保持一致，只有人脸部分不一致
             # 以避免神经网络学习到错误的性质
-            x, y, x_test, y_test = _reconbine_dataset([user_name], [non_user_dir]) # 不能以字符串输入，要以列表形式输入
+            x, y, x_test, y_test = reconbine_dataset([user_name], [non_user_dir]) # 不能以字符串输入，要以列表形式输入
             train(x, y, x_test, y_test, False, user_name)
 
         if (target == "I") or (target == "i"):

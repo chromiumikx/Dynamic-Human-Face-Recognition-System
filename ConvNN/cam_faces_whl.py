@@ -9,6 +9,7 @@ import numpy as np
 from ConvNN.para_config import *
 from ConvNN.io_whl import *
 from ConvNN.detection_whl import *
+from ConvNN.CNN_whl import *
 
 
 def catchUserFace():
@@ -50,13 +51,19 @@ def catchUserFace():
         cv2.imshow('Face Detect',frame)
 
         if (cv2.waitKey(1) & 0xFF == ord('q')) or (j == 20): # j：录取照片的数量
+            # When everything done, release the capture
+            cap.release()
+            cv2.destroyAllWindows()
+
             # 录取完用户数据后，自动增加数据集一次
             expand_dataset('E:/Cache/GitHub/Dynamic-Human-Face-Recognition-System/ConvNN/users_data/'+user_name+'_data')
+            x, y, x_test, y_test = reconbine_dataset([user_name], [non_user_dir]) # 不能以字符串输入，要以列表形式输入
+            train(x, y, x_test, y_test, False, user_name)
             break
 
-    # When everything done, release the capture
-    cap.release()
-    cv2.destroyAllWindows()
+    # # When everything done, release the capture
+    # cap.release()
+    # cv2.destroyAllWindows()
 
 
 

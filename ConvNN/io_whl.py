@@ -144,6 +144,16 @@ def expand_dataset(data_dir):
         cv2.imwrite(data_dir + "/expand_noise_face_" + str(i) + ".jpg", np.floor(img_1))
 
 
+def load_registred_user():
+    _dir = "registered_users_name.txt"
+    with open(_dir, "r") as f:
+        temp = f.readlines()
+        users = []
+        # tags = []
+        for i in temp:
+            users.append([k for k in ((i.strip()).split())])
+        return users
+
 
 if __name__ == "__main__":
     a, b = load_pics_as_mats(["temp"])

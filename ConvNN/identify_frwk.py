@@ -68,19 +68,19 @@ if __name__ == "__main__":
     检测识别模块
     '''
     print("Human Face Recognition System v0.9")
-    user_name = input("Input your name:")
-    user_id = input("Input your id:")
+    user_name = "0" # input("Input your name:") # 不再需要输入用户名，可以自动搜索
+    user_id = "0" # input("Input your id:") # 不再需要输入用户名，可以自动搜索
     model_name = load_registred_user()
     net_save_path = {}
     for i_nodel_name in model_name:
         net_save_path[i_nodel_name] = "/models/model_" + i_nodel_name + ".ckpt"
-    try:
-        os.listdir("/models/").index("model_" + user_name + ".ckpt")
-        in_user_list = 1
-    except ValueError:
-        in_user_list = 0
+    # try:
+    #     os.listdir("/models/").index("model_" + user_name + ".ckpt")
+    #     in_user_list = 1
+    # except ValueError:
+    #     in_user_list = 0
 
-    if (user_name == "Q") or (user_name == "q") or (user_id == "Q") or (user_id == "q") or (in_user_list == 0):
+    if False:# (user_name == "Q") or (user_name == "q") or (user_id == "Q") or (user_id == "q") or (in_user_list == 0):
         print("Quit.\n")
     else:
         '''
@@ -159,22 +159,30 @@ if __name__ == "__main__":
                     y_tt = np.array(y_tt)
                     accuracy_value = {} # 重置
                     print(accuracy_value)
+                    '''
+                    要求系统必须已经有一个用户（模型）
+                    找出和现有模型匹配度最大的用户的名字
+                    '''
+                    target_user_name = model_name[0]
                     for i_nodel_name in model_name:
                         pre_saver.restore(sess, net_save_path[i_nodel_name])
                         [accuracy_value[i_nodel_name]] = sess.run([accuracy], feed_dict={x_ph: x_tt, y_ph: y_tt, keep_prob: 1})
+                        if accuracy_value[i_nodel_name] > accuracy_value[target_user_name]:
+                            target_user_name = i_nodel_name
 
                     print("Accuracy is: ")
                     print(accuracy_value)
-                    # if accuracy_value>0.9:
-                    #     for (x1, y1, x2, y2) in face_area:
-                    #         cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 1)
-                    #         font = cv2.FONT_HERSHEY_SIMPLEX
-                    #         cv2.putText(frame, 'MATCH', (x1+10, y1), font, 2, (0, 255, 0), 2)
-                    # else:
-                    #     for (x1, y1, x2, y2) in face_area:
-                    #         cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 0, 255), 1)
-                    #         font = cv2.FONT_HERSHEY_SIMPLEX
-                    #         cv2.putText(frame, 'XXXXX', (x1+10, y1), font, 2, (0, 0, 255), 2)
+                    if accuracy_value[target_user_name] > 0.9:
+                        for (x1, y1, x2, y2) in face_area:
+                            cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 1)
+                            font = cv2.FONT_HERSHEY_SIMPLEX
+                            str_match = 'match '+target_user_name
+                            cv2.putText(frame, str_match, (x1, y1), font, 2, (0, 255, 0), 2)
+                    else:
+                        for (x1, y1, x2, y2) in face_area:
+                            cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 0, 255), 1)
+                            font = cv2.FONT_HERSHEY_SIMPLEX
+                            cv2.putText(frame, 'no this user', (x1, y1), font, 2, (0, 0, 255), 2)
 
                     # 每次重新录取待检测新用户数据前删除已经检测过的数据
                     _p = os.getcwd()

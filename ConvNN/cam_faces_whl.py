@@ -4,6 +4,7 @@
 
 import os
 import cv2
+import time
 import tkinter as tk
 import numpy as np
 from ConvNN.para_config import *
@@ -19,8 +20,11 @@ def catchUserFace():
     user_name = input("Input your name:")
     user_id = input("Input your ID:")
 
-    i = 0
-    j = 0
+    print("collecting will start after 3 seconds...")
+    time.sleep(4)
+
+    count_collect_internal = 0
+    count_collect_num = 0
     while(True):
         # Capture frame-by-frame
         # frame的宽、长、深为：(480, 640, 3)
@@ -32,25 +36,25 @@ def catchUserFace():
         for (x1,y1,x2,y2) in face_area:
             cv2.rectangle(frame,(x1,y1),(x2,y2),(100,0,0),1)
 
-        i = i+1
-        if i == 3:
+        count_collect_internal = count_collect_internal+1
+        if count_collect_internal == 3:
             face_mat = get_faces_mat(frame, face_area)
             # ！！！空列表 [] ，在if语句中 等价于 False或None？？？
             if face_mat:
-                j = j + 1
-                save_face_pics(face_mat, user_name, j)
+                count_collect_num = count_collect_num + 1
+                save_face_pics(face_mat, user_name, count_collect_num)
                 cv2.imshow('Cut Face', face_mat[0]) # getFacesMat()返回值为二维列表，是多个face的数值矩阵
 
-        if (i>=3) and (i<=4):
+        if (count_collect_internal>=3) and (count_collect_internal<=4):
             for (x1, y1, x2, y2) in face_area:
                 cv2.rectangle(frame, (x1, y1), (x2, y2), (255, 0, 0), 1)
 
-        if i > 4:
-            i = 0
+        if count_collect_internal > 4:
+            count_collect_internal = 0
 
         cv2.imshow('Face Detect',frame)
 
-        if (cv2.waitKey(1) & 0xFF == ord('q')) or (j == 20): # j：录取照片的数量
+        if (cv2.waitKey(1) & 0xFF == ord('q')) or (count_collect_num == 20): # j：录取照片的数量
             # When everything done, release the capture
             cap.release()
             cv2.destroyAllWindows()

@@ -4,4 +4,4 @@ learning_rate = 1e-4
 conv_layers = 2
 fc_layers = 2
 dropout_keep_prob = 0.5
-max_steps = 100
+max_steps = 50

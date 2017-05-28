@@ -68,25 +68,49 @@ def reconbine_dataset(p_user_dir, n_user_dir):
     return np.array(train_samples), np.array(train_labels), np.array(test_samples), np.array(test_labels)
 
 
+'''
+关于graph和session、saver等类的关系还需要学习清楚
+'''
 def build_graph():
-    # 占位符，等待传入数据
-    with tf.name_scope("inputs"):
-        x_ph = tf.placeholder(tf.float32, [None, image_size * image_size], name="x_input")
-        y_ph = tf.placeholder(tf.float32, [None, 2], name="y_input")
+    graph = tf.Graph()
+    with graph.as_default():
+        # 占位符，等待传入数据
+        with tf.name_scope("inputs"):
+            x_ph = tf.placeholder(tf.float32, [None, image_size*image_size], name="x_input")
+            y_ph = tf.placeholder(tf.float32, [None, 2], name="y_input")
 
-        x_images = tf.reshape(x_ph, [-1, image_size, image_size, 1], name="x_reshape")
+            x_images = tf.reshape(x_ph, [-1,image_size,image_size,1], name="x_reshape")
 
-    with tf.name_scope("Convolution_Layer"):
-        h_pool1 = add_conv_pool_layer(1, x_images, 5, 1, 32, tf.nn.relu)
-        h_pool1_dropout = tf.nn.dropout(h_pool1, keep_prob=1)
-        h_pool2 = add_conv_pool_layer(2, h_pool1_dropout, 5, 32, 64, tf.nn.relu)
-        h_pool2_flat = tf.reshape(h_pool2, [-1, 8 * 8 * 64])
+        with tf.name_scope("Convolution_Layer"):
+            h_pool1 = add_conv_pool_layer(1, x_images, 5, 1, 32, tf.nn.relu)
+            h_pool1_dropout = tf.nn.dropout(h_pool1, keep_prob=1)
+            h_pool2 = add_conv_pool_layer(2, h_pool1_dropout, 5, 32, 64, tf.nn.relu)
+            h_pool2_flat = tf.reshape(h_pool2, [-1, 8*8*64])
 
-    keep_prob = tf.placeholder(tf.float32)
-    with tf.name_scope("Full_Connect_Layer"):
-        l1 = add_fc_layer(1, h_pool2_flat, 8 * 8 * 64, 1024, tf.nn.relu)
-        l1_dropout = tf.nn.dropout(l1, keep_prob)
-        output_prediction = add_fc_layer(2, l1_dropout, 1024, 2, None)
+        keep_prob = tf.placeholder(tf.float32)
+        with tf.name_scope("Full_Connect_Layer"):
+            l1 = add_fc_layer(1, h_pool2_flat, 8*8*64, 1024, tf.nn.relu)
+            l1_dropout = tf.nn.dropout(l1, keep_prob)
+            output_prediction = add_fc_layer(2, l1_dropout, 1024, 2, None)
+
+        with tf.name_scope("loss"):
+            # 损失熵
+            cross_entropy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=y_ph, logits=output_prediction))
+
+        with tf.name_scope("train"):
+            # 训练步长，优化器，目的
+            train_step = tf.train.AdamOptimizer(learning_rate).minimize(cross_entropy)
+
+
+        correct_prediction = tf.equal(tf.argmax(output_prediction, 1), tf.argmax(y_ph, 1))
+        accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
+
+        '''
+        保存训练好的模型，在Graph之后保存这个图
+        '''
+        my_saver = tf.train.Saver()
+
+    return graph, accuracy, output_prediction, my_saver
 
 
 def add_fc_layer(layer_num, X_input, input_scale, layer_depth, active_function=None, keep_prob=1.0):
@@ -163,7 +187,7 @@ def train(x, y, x_test, y_test, is_load=False, user_name=None):
         print("running....")
 
         log_loss = []
-        log_acc = []
+        log_tset_acc = []
 
         for i in range(max_steps):
             for batch_xs, batch_ys in get_patch(x, y, len(x)-1):
@@ -177,12 +201,12 @@ def train(x, y, x_test, y_test, is_load=False, user_name=None):
 
             # feed测试集的时候，keep_prob为1
             # 对于训练集，则是0.5或别的，这主要是为了让训练的网络有泛化的能力
-            accuracy_value = sess.run([accuracy], feed_dict={x_ph: x_test, y_ph: y_test, keep_prob: 1})
-            print("ACC of test in "+str(i)+str(accuracy_value))
-            log_acc.append(accuracy_value)
+            accuracy_test_value = sess.run([accuracy], feed_dict={x_ph: x_test, y_ph: y_test, keep_prob: 1})
+            print("ACC of test in "+str(i)+str(accuracy_test_value))
+            log_tset_acc.append(accuracy_test_value)
 
-        show_info("LOSS", "LOSS", [log_loss], ["NtoN"])
-        show_info("ACC", "ACC", [log_acc], ["NtoN"])
+        show_info("Training Loss", "LOSS", [log_loss], ["NtoN"])
+        show_info("Test Accuracy", "ACC", [log_tset_acc], ["NtoN"])
 
 
         '''
@@ -240,7 +264,8 @@ def interfere(x, y, user_name):
         my_saver.restore(sess, net_save_path)
 
         # 预测
-        accuracy_val, output_prediction_val = sess.run([accuracy, output_prediction], feed_dict={x_ph: x, y_ph: y, keep_prob: 1})
+        accuracy_val, output_prediction_val = sess.run([accuracy, output_prediction],
+                                                       feed_dict={x_ph: x, y_ph: y, keep_prob: 1})
         print("OUT: "+str(output_prediction_val))
         print("ACC: "+str(accuracy_val))
 

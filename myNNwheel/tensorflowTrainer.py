@@ -145,12 +145,12 @@ def run_train(x, y, x_test, y_test, image_size, my_saver, save_path, is_load, re
                 # 传入每次的训练数据，字典形式
                 _, acc_training = sess.run([train_step, accuracy], feed_dict={x_ph: batch_xs, y_ph: batch_ys})
 
-            summary_, accuracy_value, output_value = sess.run([merged, accuracy, output_prediction],
+            summary_, accuracy_value, output_value, loss_cross_entropy = sess.run([merged, accuracy, output_prediction, cross_entropy],
                                                               feed_dict={x_ph: x_test, y_ph: y_test})
 
             my_log_show(i, "ACC_test", accuracy_value)
             my_log_show(i, "ACC_training", acc_training)
-            f_ACC.write(" "+str(accuracy_value)+" ")
+            f_ACC.write(" "+str(loss_cross_entropy)+" ")
             # my_log_show(i, "Output", output_value)
             # my_log_show(i, "y_ph", y_ph_value)
             # my_log_show(i, "w1", w1_value)
@@ -245,10 +245,10 @@ if __name__ == "__main__":
     save_add_end = "_"+str(learning_rate)+"_"+str(image_size)
     result_path = result_type_1+save_add_end+".txt"
 
-    dire = ["ikx", "sb", "qin"]
+    dire = ["ikx", "qin"]
     x, y = reconbineDatasets(dire)
 
-    dire_test = ["ikxx", "ei"]
+    dire_test = ["ikx", "ikx1"]
     x_test, y_test = reconbineDatasets(dire_test)
     run_train(x, y, x_test, y_test, image_size, my_saver, save_path, is_load, result_path, learning_rate)
 
@@ -276,11 +276,11 @@ if __name__ == "__main__":
     # f_2.close()
     # print(len(ACC_2[0]))
     #
-    plt.plot(ACC[0], "-o", label="ACC-0.001")
+    plt.plot(ACC[0], "-o", label="Cross Entropy-0.001")
     # # plt.plot(ACC_1[0], "-,", label="ACC-0.001")
     # plt.plot(ACC_2[0], "-s", label="ACC-0.01")
     plt.legend()  # 展示图例
     plt.xlabel('After Steps')  # 给 x 轴添加标签
-    plt.ylabel('Accuracy')  # 给 y 轴添加标签
-    plt.title('Accuracy Changing on TestDataSet')  # 添加图形标题
+    plt.ylabel('Cross Entropy')  # 给 y 轴添加标签
+    plt.title('Cross Entropy Changing on TestDataSet')  # 添加图形标题
     plt.show()

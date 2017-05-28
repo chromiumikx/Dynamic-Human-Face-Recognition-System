@@ -1,7 +1,7 @@
 import cv2
 import tensorflow as tf
 
-from  ConvNN.cam_faces_whl import *
+from ConvNN.cam_faces_whl import *
 from ConvNN.para_config import *
 from ConvNN.io_whl import *
 from ConvNN.detection_whl import *
@@ -72,8 +72,8 @@ if __name__ == "__main__":
     user_id = "0" # input("Input your id:") # 不再需要输入用户名，可以自动搜索
     model_name = load_registred_user()
     net_save_path = {}
-    for i_nodel_name in model_name:
-        net_save_path[i_nodel_name] = "/models/model_" + i_nodel_name + ".ckpt"
+    for i_model_name in model_name:
+        net_save_path[i_model_name] = "/models/model_" + i_model_name + ".ckpt"
     # try:
     #     os.listdir("/models/").index("model_" + user_name + ".ckpt")
     #     in_user_list = 1
@@ -164,11 +164,11 @@ if __name__ == "__main__":
                     找出和现有模型匹配度最大的用户的名字
                     '''
                     target_user_name = model_name[0]
-                    for i_nodel_name in model_name:
-                        pre_saver.restore(sess, net_save_path[i_nodel_name])
-                        [accuracy_value[i_nodel_name]] = sess.run([accuracy], feed_dict={x_ph: x_tt, y_ph: y_tt, keep_prob: 1})
-                        if accuracy_value[i_nodel_name] > accuracy_value[target_user_name]:
-                            target_user_name = i_nodel_name
+                    for i_model_name in model_name:
+                        pre_saver.restore(sess, net_save_path[i_model_name])
+                        [accuracy_value[i_model_name]] = sess.run([accuracy], feed_dict={x_ph: x_tt, y_ph: y_tt, keep_prob: 1})
+                        if accuracy_value[i_model_name] > accuracy_value[target_user_name]:
+                            target_user_name = i_model_name
 
                     print("Accuracy is: ")
                     print(accuracy_value)
@@ -176,7 +176,7 @@ if __name__ == "__main__":
                         for (x1, y1, x2, y2) in face_area:
                             cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 1)
                             font = cv2.FONT_HERSHEY_SIMPLEX
-                            str_match = 'match '+target_user_name
+                            str_match = 'match ' + target_user_name
                             cv2.putText(frame, str_match, (x1, y1), font, 2, (0, 255, 0), 2)
                     else:
                         for (x1, y1, x2, y2) in face_area:
@@ -190,7 +190,7 @@ if __name__ == "__main__":
                     for _it in _temp_datas_fn:
                         os.remove(_p+"/users_data/temp_data/"+_it)
 
-                cv2.imshow('Face Detect',frame)
+                cv2.imshow('Face Detect',frame) # 显示图像和处理后的结果
 
                 if (cv2.waitKey(1) & 0xFF == ord('q')):
                     break

@@ -1,9 +1,9 @@
 import cv2
 import tensorflow as tf
 
-from  ConvNN.cam_faces import *
+# from  ConvNN.cam_faces import *
 from myNNwheel.const_config import *
-from myNNwheel.readDataset import readStandardData
+from myNNwheel.readDataset import *
 
 
 def preOperate(img):
@@ -93,9 +93,9 @@ if __name__ == "__main__":
             # 后续窗口需要建立和调整，需要frame的大小
             _, frame = cap.read()
             cv2.flip(frame, 1, frame)  # mirror the image 翻转图片
-            face_area = detectFaces(frame, face_cascade)
-            face_mat = getFacesMat(frame, face_area)
-            saveFacePics(face_mat, "temp", 0)
+            face_area = detect_faces(frame, face_cascade)
+            face_mat = get_faces_mat(frame, face_area)
+            save_face_pics(face_mat, "temp", 0)
             # ！！！空列表 [] ，在if语句中 等价于 False或None？？？
             # getFacesMat 返回列表，故取第一个即可
             for (x1,y1,x2,y2) in face_area:

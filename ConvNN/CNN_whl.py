@@ -1,43 +1,54 @@
-import cv2
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
+"""
+MIT License
+
+Copyright (c) 2017 Mingthic
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+"""
+
 import tensorflow as tf
-import numpy as np
 from ConvNN.io_whl import *
 from ConvNN.para_config import *
 
 
-# 两种组织训练集和测试集的形式
-def _reconbine_dataset(p_user_dir, n_user_dir):
-    p_pics, p_user_id = load_pics_as_mats(p_user_dir)
-    n_pics, n_user_id = load_pics_as_mats(n_user_dir)
+def recombine_data(p_user_dir, n_user_dir):
+    """将数据整理为训练数据和测试数据
 
-    train_samples = []
-    train_labels = []
-    test_samples = []
-    test_labels = []
-    pic_size = image_size*image_size
+    Args：
+        p_user_dir：用户数据文件夹
+        n_user_dir：非用户数据文件夹
 
-    for i in p_pics:
-        i.resize((1, pic_size))
-        train_samples.append(i[0]) # resize后只取第一行，否则取的是二维数组，维度大小（1，1024）的
-        train_labels.append([0, 1.])
+    Inputs：
+        要求载入用户和非同户数据
 
-    for ii in range(10):
-        test_samples.append(train_samples.pop())
-        test_labels.append(train_labels.pop())
+    Output：
+        train_samples：用于训练的例子数据
+        train_labels：用于训练的标签
+        test_samples：用于测试的例子数据
+        test_labels：用于测试的标签
 
-    for j in n_pics:
-        j.resize((1, pic_size))
-        train_samples.append(j[0])
-        train_labels.append([1.0, 0])
+    Returns：
+        即输出
+    """
 
-    for jj in range(10):
-        test_samples.append(train_samples.pop())
-        test_labels.append(train_labels.pop())
-
-    return np.array(train_samples), np.array(train_labels), np.array(test_samples), np.array(test_labels)
-
-
-def reconbine_dataset(p_user_dir, n_user_dir):
     p_pics, p_user_id = load_pics_as_mats(p_user_dir)
     n_pics, n_user_id = load_pics_as_mats(n_user_dir)
 
@@ -68,10 +79,12 @@ def reconbine_dataset(p_user_dir, n_user_dir):
     return np.array(train_samples), np.array(train_labels), np.array(test_samples), np.array(test_labels)
 
 
-'''
-关于graph和session、saver等类的关系还需要学习清楚
-'''
 def build_graph():
+    """
+    关于graph和session、saver等类的关系还需要学习清楚
+
+    """
+
     graph = tf.Graph()
     with graph.as_default():
         # 占位符，等待传入数据
@@ -114,6 +127,26 @@ def build_graph():
 
 
 def add_fc_layer(layer_num, X_input, input_scale, layer_depth, active_function=None, keep_prob=1.0):
+    """增加全连接层
+
+    Args：
+        layer_num：本全连接层的序号
+        X_input：本层的输入
+        input_scale：每个输入的维度
+        layer_depth：本层的深度，即神经元个数，亦即权重矩阵的列数
+        active_function：激活函数
+        keep_prob：dropout技术，神经元随机置零时不置零的概率，即留下神经元的概率
+
+    Inputs：
+        无
+
+    Output：
+        无
+
+    Returns：
+        本层的神经元，即经过与权重相乘，加上偏置，再经过激活函数后的输出值
+    """
+
     with tf.name_scope("fc_layer_"+str(layer_num)):
         with tf.name_scope("paras"):
             Weights = tf.Variable(tf.truncated_normal([input_scale, layer_depth], stddev=0.1))
@@ -125,6 +158,27 @@ def add_fc_layer(layer_num, X_input, input_scale, layer_depth, active_function=N
 
 
 def add_conv_pool_layer(conv_layer_num, X_input, patch_size=5, input_depth=1, conv_depth=32, active_function=None, keep_prob=1.0):
+    """增加全连接层
+
+    Args：
+        conv_layer_num：本卷积层的序号
+        X_input：本层的输入
+        patch_size：卷积核的大小
+        input_depth：每组输入的深度，此处用的灰度图故为1，如果是RGB彩色图像则为3
+        conv_depth：本层的深度，即卷积核的个数（对每个输入而言）
+        active_function：激活函数
+        keep_prob：dropout技术，神经元随机置零时不置零的概率，即留下神经元的概率
+
+    Inputs：
+        无
+
+    Output：
+        无
+
+    Returns：
+        本层的神经元，经过激活、卷积、池化后的输出值
+    """
+
     def conv2d(x, W):
         return tf.nn.conv2d(x, W, strides=[1, 1, 1, 1], padding='SAME')
     def max_pool_2x2(x):
@@ -138,6 +192,28 @@ def add_conv_pool_layer(conv_layer_num, X_input, patch_size=5, input_depth=1, co
 
 
 def train(x, y, x_test, y_test, is_load=False, user_name=None):
+    """训练用户模型
+
+    Args：
+        x：用于训练的例子数据
+        y：用于训练的标签
+        x_test：用于测试的例子数据
+        y_test：用于测试的标签
+        is_load：训练时是否使用之前训练过的的模型，此处为False，表示每次都重新训练
+        user_name：已有数据的用户名字，用于保存模型命名
+
+    Inputs：
+        要求载入用户和非同户数据
+
+    Output：
+        保存和显示训练过程中的损失函数值和准确度等数据
+        保存训练好的模型
+        保存已注册用户的名字
+
+    Returns：
+        无
+    """
+
     graph = tf.Graph()
     with graph.as_default():
         # 占位符，等待传入数据
@@ -228,6 +304,25 @@ def train(x, y, x_test, y_test, is_load=False, user_name=None):
 
 
 def interfere(x, y, user_name):
+    """载入用户模型进行推理预测
+
+    Args：
+        x：用于预测的例子数据
+        y：用于预测的标签
+        user_name：已有模型的用户名字，用于载入训练好的模型
+
+    Inputs：
+        要求载入用户模型
+
+    Output：
+        打印预测结果
+        打印预测的准确率
+        显示隐藏层的信息
+
+    Returns：
+        无
+    """
+
     graph = tf.Graph()
     with graph.as_default():
         # 占位符，等待传入数据
@@ -274,6 +369,11 @@ def interfere(x, y, user_name):
 
 
 def run_CNN():
+    """
+    结合上述两个函数，供识别模块调用
+
+    """
+
     while True:
         target = input("Train or Interfere? (T/I):")
         if (target=="q") or (target=="Q"):
@@ -286,7 +386,7 @@ def run_CNN():
             # 作为非用户人脸的参照系，主要由手动挑选的正面人脸组成
             # 目的是为了保持，正的用户人脸集和负的非用户人脸集，在倾斜度、光照、姿态、发型、背景性质（未考虑，可能有影响）等保持一致，只有人脸部分不一致
             # 以避免神经网络学习到错误的性质
-            x, y, x_test, y_test = reconbine_dataset([user_name], [non_user_dir]) # 不能以字符串输入，要以列表形式输入
+            x, y, x_test, y_test = recombine_data([user_name], [non_user_dir]) # 不能以字符串输入，要以列表形式输入
             train(x, y, x_test, y_test, False, user_name)
 
         if (target == "I") or (target == "i"):

@@ -1,7 +1,29 @@
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
-'''
-数据输入输出部分集成于此
-'''
+"""
+MIT License
+
+Copyright (c) 2017 Mingthic
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+"""
+
 import os
 import cv2
 import numpy as np
@@ -9,6 +31,21 @@ import matplotlib.pyplot as plt
 
 
 def load_pics_as_mats(dir_names):
+    """载入文件夹中的图片作为矩阵
+
+    Args：
+        dir_names：文件夹路径
+
+    Inputs：
+        载入图片
+
+    Output：
+        无
+
+    Returns：
+        归一化过后的人脸数据和ID
+    """
+
     StdFaceMat = []
     StdUserID = []
     _p = os.getcwd()
@@ -34,6 +71,23 @@ def load_pics_as_mats(dir_names):
 
 
 def get_patch(x, y, patch_size):
+    """取数据集中的一部分
+
+    Args：
+        x：输入的人脸数据
+        y：输入的标签数据
+        patch_size：要取的数据批的大小
+
+    Inputs：
+        无
+
+    Output：
+        无
+
+    Yields：
+        本批次数据x_this_patch，y_this_patch
+    """
+
     step_start = 0
     while step_start < len(x):
         step_end = step_start + patch_size
@@ -43,6 +97,25 @@ def get_patch(x, y, patch_size):
 
 
 def show_info(fig_name, y_label, y, y_types, dim=1):
+    """对plt的封装，显示信息
+
+    Args：
+        fig_name：图的名字
+        y_label：数据的标签（类型）
+        y：要画图的数据
+        y_types：用于对比
+        dim：数据维度，目前只考虑一元
+
+    Inputs：
+        无
+
+    Output：
+        显示数据图
+
+    Returns：
+        无    
+    """
+
     for i in range(len(y)):
         plt.plot(y[i], label=y_types[i])
 
@@ -54,6 +127,21 @@ def show_info(fig_name, y_label, y, y_types, dim=1):
 
 
 def show_conv_layers(h_pool1_val):
+    """以二维形式显示卷积层
+
+    Args：
+        h_pool1_val：卷积层的数据
+
+    Inputs：
+        无
+
+    Output：
+        显示卷积层的数据图像
+
+    Returns：
+        无    
+    """
+
     conv_depth = h_pool1_val.shape[3]
     is_show_for_every_batch = 1 # h_pool1_val.shape[0]
     for jj in range(is_show_for_every_batch):
@@ -77,6 +165,24 @@ def show_conv_layers(h_pool1_val):
 
 
 def save_face_pics(images, user_name, pic_id = 0):
+    """将人脸区域的图片保存下来
+
+    Args：
+        images：人脸数据，三维列表，即支持单个图片中多人脸检测后分别保存
+        user_name：用于图片命名
+        pic_id：便于程序控制命名不冲突
+
+    Inputs：
+        无
+
+    Output：
+        保存用户人脸图片
+        保存用户的标签（ID）
+
+    Returns：
+        无    
+    """
+
     _p = os.getcwd()
     os.chdir(_p+"/users_data")
     user_name_add = user_name + "_data"
@@ -107,6 +213,21 @@ def save_face_pics(images, user_name, pic_id = 0):
 
 
 def sort_out_non_user_pics():
+    """整理lfw数据集的
+
+    Args：
+        无
+
+    Inputs：
+        载入数据集的所有图片
+
+    Output：
+        检测人脸后切出人脸保存
+
+    Returns：
+        无    
+    """
+
     import ConvNN.detection_whl
     face_cascade = cv2.CascadeClassifier("haarcascade_frontalface_alt.xml")
     source_folder = "E:/Learn/GraduationProject/DataSets/lfw/" # 源文件目录
@@ -128,6 +249,22 @@ def sort_out_non_user_pics():
 
 
 def expand_dataset(data_dir):
+    """为录入的用户数据增加干扰和修正
+
+    Args：
+        data_dir：待修正扩大数据集的数据路径
+
+    Inputs：
+        载入图片
+
+    Output：
+        增加亮度后保存
+        增加噪声后保存
+
+    Returns：
+        无    
+    """
+
     _datas = os.listdir(data_dir)
 
     i=0
@@ -146,6 +283,21 @@ def expand_dataset(data_dir):
 
 
 def load_registred_user():
+    """载入已注册用户的用户名
+
+    Args：
+        无
+
+    Inputs：
+        无
+
+    Output：
+        无
+
+    Returns：
+        列表形式返回用户名 
+    """
+
     _dir = "registered_users_name.txt"
     with open(_dir, "r") as f:
         temp = f.readline()

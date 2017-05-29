@@ -1,58 +1,45 @@
-import cv2
-import tensorflow as tf
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
+"""
+MIT License
 
-from ConvNN.cam_faces_whl import *
-from ConvNN.para_config import *
-from ConvNN.io_whl import *
+Copyright (c) 2017 Mingthic
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+"""
+
 from ConvNN.detection_whl import *
-
-
-def preOperate(img):
-    if img.ndim == 3:
-        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    else:
-        gray = img  # if语句：如果img维度为3，说明不是灰度图，先转化为灰度图gray，如果不为3，也就是2，原图就是灰度图
-
-    cv2.imshow("GGGGG", gray)
-    return (gray-128)/256.+0.5
-
-
-def add_fc_layer(layer_num, X_input, input_scale, layer_depth, active_function=None, keep_prob=1.0):
-    with tf.name_scope("fc_layer_"+str(layer_num)):
-        with tf.name_scope("paras"):
-            Weights = tf.Variable(tf.truncated_normal([input_scale, layer_depth], stddev=0.1))
-            biases = tf.Variable(tf.zeros([layer_depth]))
-        if active_function==None:
-            return tf.matmul(X_input, Weights)+biases
-        else:
-            return active_function(tf.matmul(X_input, Weights)+biases)
-
-
-def add_conv_pool_layer(conv_layer_num, X_input, patch_size=5, input_depth=1, conv_depth=32, active_function=None, keep_prob=1.0):
-    def conv2d(x, W):
-        return tf.nn.conv2d(x, W, strides=[1, 1, 1, 1], padding='SAME')
-    def max_pool_2x2(x):
-        return tf.nn.max_pool(x, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
-    with tf.name_scope("conv_layer_" + str(conv_layer_num)):
-        with tf.name_scope("conv_paras"):
-            conv_weights = tf.Variable(tf.truncated_normal(shape=[patch_size, patch_size, input_depth, conv_depth], stddev=0.1))
-            conv_biases = tf.constant(0.1, shape=[conv_depth])
-        h = active_function(conv2d(X_input, conv_weights) + conv_biases)
-        return max_pool_2x2(h)
+from ConvNN.CNN_whl import add_fc_layer, add_conv_pool_layer
 
 
 if __name__ == "__main__":
     face_cascade = cv2.CascadeClassifier("haarcascade_frontalface_alt.xml")
     pre_saver = None
     print("Human Face Recognition System v0.9")
-    print("Copyright-Mingthic")
     print("\n")
 
     from ConvNN.cam_faces_whl import *
     from ConvNN.CNN_whl import *
-    run_command = {'1': collect_user_data, '2': run_CNN}
+    run_command = {'1': catch_user_face}
     while True:
-        command = input("Do you want?(1.insert user data 2.train my model):")
+        command = '1'
+        command = input("Do you want?(1.insert user data):")
 
         try:
             run_command[command]()

@@ -1,9 +1,50 @@
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
+"""
+MIT License
+
+Copyright (c) 2017 Mingthic
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+"""
+
 import cv2
-import numpy as np
 from ConvNN.para_config import *
 
 
 def detect_faces(image_name, face_cascade):
+    """检测人脸区域
+
+    Args：
+        image_name：待检测的人脸图片矩阵或图片路径
+        face_cascade：一个用于检测人脸的分类器对象，为避免调用detect函数时每次重新载入这个分类器对象，故从外部传入
+
+    Inputs：
+        载入图片
+
+    Output：
+        无
+
+    Returns：
+        检测到的人脸区域，是一个二维列表
+    """
+
     if type(image_name) == str:
         img = cv2.imread(image_name)
         print("TTT")
@@ -23,6 +64,22 @@ def detect_faces(image_name, face_cascade):
 
 
 def get_faces_mat(image_name, face_area): # face_Area是左上角和右下角坐标(x1,y1,x2,y2)
+    """获取人脸数据矩阵
+
+    Args：
+        image_name：待检测的人脸图片矩阵或图片路径
+        face_area：人脸区域坐标
+
+    Inputs：
+        载入图片
+
+    Output：
+        无
+
+    Returns：
+        返回检测到的人脸区域数据，并标准化为image_size*image_size大小的矩阵
+    """
+
     if face_area:
         if type(image_name) == "str":
             img = cv2.imread(image_name)

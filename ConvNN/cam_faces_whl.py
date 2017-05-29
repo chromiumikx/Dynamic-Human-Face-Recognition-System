@@ -1,19 +1,52 @@
-#-*- coding: UTF-8 -*-
-# 显示一律使用英文
-# CV用于作人脸检测，切图，归一化
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
+"""
+MIT License
 
-import os
-import cv2
+Copyright (c) 2017 Mingthic
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+"""
+
+
 import time
-import tkinter as tk
-import numpy as np
-from ConvNN.para_config import *
-from ConvNN.io_whl import *
-from ConvNN.detection_whl import *
 from ConvNN.CNN_whl import *
+from ConvNN.detection_whl import *
 
 
-def catchUserFace():
+def catch_user_face():
+    """录入用户数据并自动训练用户模型
+    
+    Args：
+        无
+    
+    Inputs：
+        要求输入用户名
+        要求输入用户ID
+
+    Output：
+        保存用户头像和ID为文件
+    
+    Returns：
+        无
+    """
+
     cap = cv2.VideoCapture(0)
     face_cascade = cv2.CascadeClassifier("haarcascade_frontalface_alt.xml")
 
@@ -61,7 +94,7 @@ def catchUserFace():
 
             # 录取完用户数据后，自动增加数据集一次
             expand_dataset('E:/Cache/GitHub/Dynamic-Human-Face-Recognition-System/ConvNN/users_data/'+user_name+'_data')
-            x, y, x_test, y_test = reconbine_dataset([user_name], [non_user_dir]) # 不能以字符串输入，要以列表形式输入
+            x, y, x_test, y_test = recombine_data([user_name], [non_user_dir]) # 不能以字符串输入，要以列表形式输入
             train(x, y, x_test, y_test, False, user_name)
             break
 
@@ -70,8 +103,22 @@ def catchUserFace():
     # cv2.destroyAllWindows()
 
 
+def show_detection():
+    """显示检测到的人脸
 
-def showDetection():
+    Args：
+        无
+
+    Inputs：
+        需要读入级联分类器描述文件分类器haarcascade_frontalface_alt.xml
+
+    Output：
+        显示当前摄像头捕获的人脸
+
+    Returns：
+        无
+    """
+
     cap = cv2.VideoCapture(0)
     face_cascade = cv2.CascadeClassifier("haarcascade_frontalface_alt.xml")
 
@@ -102,31 +149,5 @@ def showDetection():
     cv2.destroyAllWindows()
 
 
-
-def collect_user_data():
-        # GUI
-        # tk实现
-        # 实时刷新
-        window = tk.Tk()
-        window.title('my window')
-        window.geometry('200x100')
-
-        b_1 = tk.Button(window, text='catchUserFace', command=catchUserFace).pack()
-        b_2 = tk.Button(window, text='showDetection', command=showDetection).pack()
-
-        window.mainloop()
-
-        # face_cascade = cv2.CascadeClassifier("haarcascade_frontalface_alt.xml")
-        # print(type("test_faces_raw.jpg"))
-        # face_areas = detectFaces("test_faces_raw.jpg", face_cascade)
-        # gray_mat = cv2.imread("test_faces_raw.jpg")
-        # for (x1, y1, x2, y2) in face_areas:
-        #     cv2.rectangle(gray_mat, (x1, y1), (x2, y2), (0, 0, 0), 1)
-        #
-        # cv2.imwrite("test_faces_lock.jpg", gray_mat)
-        # cv2.imshow('Face Detect', gray_mat)
-        # cv2.destroyAllWindows()
-
-
 if __name__ == "__main__":
-    collect_user_data()
+    show_detection()

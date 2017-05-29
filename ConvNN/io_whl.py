@@ -55,7 +55,8 @@ def show_info(fig_name, y_label, y, y_types, dim=1):
 
 def show_conv_layers(h_pool1_val):
     conv_depth = h_pool1_val.shape[3]
-    for jj in range(h_pool1_val.shape[0]):
+    is_show_for_every_batch = 1 # h_pool1_val.shape[0]
+    for jj in range(is_show_for_every_batch):
         k = 0
         _t_hstk = ()
         for i in range(int(conv_depth/8)):

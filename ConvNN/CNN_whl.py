@@ -269,8 +269,8 @@ def interfere(x, y, user_name):
         print("OUT: "+str(output_prediction_val))
         print("ACC: "+str(accuracy_val))
 
-        # [h_pool1_val] = sess.run([h_pool1], feed_dict={x_ph: x, y_ph: y, keep_prob: 1})
-        # show_conv_layers(h_pool1_val)
+        [h_pool1_val] = sess.run([h_pool2], feed_dict={x_ph: x, y_ph: y, keep_prob: 1})
+        show_conv_layers(h_pool1_val)
 
 
 def run_CNN():

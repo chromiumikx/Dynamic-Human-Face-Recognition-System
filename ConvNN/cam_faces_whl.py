@@ -42,6 +42,8 @@ def catch_user_face():
 
     Output：
         保存用户头像和ID为文件
+        扩大和保存用户数据集
+        训练和保存用户模型
     
     Returns：
         无
@@ -93,7 +95,8 @@ def catch_user_face():
             cv2.destroyAllWindows()
 
             # 录取完用户数据后，自动增加数据集一次
-            expand_dataset('E:/Cache/GitHub/Dynamic-Human-Face-Recognition-System/ConvNN/users_data/'+user_name+'_data')
+            _dir = os.getcwd()
+            expand_dataset(_dir+'/users_data/'+user_name+'_data')
             x, y, x_test, y_test = recombine_data([user_name], [non_user_dir]) # 不能以字符串输入，要以列表形式输入
             train(x, y, x_test, y_test, False, user_name)
             break

@@ -265,21 +265,36 @@ def expand_dataset(data_dir):
         无    
     """
 
+    def change_light(delta_light):
+        def chglight(x):
+            r = x+delta_light
+            if r<0:
+                r = 0
+            elif r>255:
+                r = 255
+
+            return r
+        return np.frompyfunc(chglight, 1, 1)
+
     _datas = os.listdir(data_dir)
 
-    i=0
+    i=len(_datas)
+    str_ = '_'
     for _i_data in _datas:
-        i=i+1
         img = cv2.imread(data_dir+"/"+_i_data, cv2.IMREAD_GRAYSCALE)
 
         # 扩大数据集：增加各级亮度
-        img_1 = img*0.8+50
-        cv2.imwrite(data_dir + "/expand_white_face_" + str(i) + ".jpg", np.floor(img_1))
+        for delta_light in [-50, -40, -35, -30, -20, -15 -10, 5, 15, 20, 25, 30, 35, 40]:
+            img_1 = change_light(delta_light)(img)
+            cv2.imwrite(str_.join((data_dir+'/expand', str(i), 'add_light', str(delta_light), '.jpg')),
+                        np.floor(img_1.astype(np.float64)))
 
         # 扩大数据集：增加噪声
-        rd_noise = np.random.randint(0,50,size=img.shape)
-        img_2 = img*0.8+rd_noise
-        cv2.imwrite(data_dir + "/expand_noise_face_" + str(i) + ".jpg", np.floor(img_1))
+        # rd_noise = np.random.randint(0,50,size=img.shape)
+        # img_2 = img*0.8+rd_noise
+        # cv2.imwrite(data_dir + "/expand_noise_face_" + str(i) + ".jpg", np.floor(img_1))
+
+        i = i + 1
 
 
 def load_registred_user():
@@ -308,6 +323,7 @@ def load_registred_user():
 if __name__ == "__main__":
     # a, b = load_pics_as_mats(["temp"])
     # print(a[1])
-    # expand_dataset('E:/Cache/GitHub/Dynamic-Human-Face-Recognition-System/ConvNN/users_data/ikx_data')
-    users = load_registred_user()
-    print(users)
+    this_dir = 'E:/Cache/GitHub/Dynamic-Human-Face-Recognition-System/ConvNN/'
+    expand_dataset(this_dir+'users_data/ikx1_data')
+    # users = load_registred_user()
+    # print(users)

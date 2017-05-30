@@ -28,6 +28,7 @@ import os
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
+from ConvNN.para_config import *
 
 
 def load_pics_as_mats(dir_names):
@@ -286,13 +287,23 @@ def expand_dataset(data_dir):
         # 扩大数据集：增加各级亮度
         for delta_light in [-50, -40, -35, -30, -20, -15 -10, 5, 15, 20, 25, 30, 35, 40]:
             img_1 = change_light(delta_light)(img)
-            cv2.imwrite(str_.join((data_dir+'/expand', str(i), 'add_light', str(delta_light), '.jpg')),
+            cv2.imwrite(str_.join((data_dir+'/expand_light', str(i), 'add_light', str(delta_light), '.jpg')),
                         np.floor(img_1.astype(np.float64)))
 
-        # 扩大数据集：增加噪声
-        # rd_noise = np.random.randint(0,50,size=img.shape)
-        # img_2 = img*0.8+rd_noise
-        # cv2.imwrite(data_dir + "/expand_noise_face_" + str(i) + ".jpg", np.floor(img_1))
+        i = i + 1
+
+    # 距离特性问题：通过切割部分人脸再resize，得到不同距离下可能的人脸图片
+    _datas = os.listdir(data_dir)
+    for _i_data in _datas:
+        img = cv2.imread(data_dir + "/" + _i_data, cv2.IMREAD_GRAYSCALE)
+        # 距离特性问题：通过切割部分人脸再resize，得到不同距离下可能的人脸图片
+        for delta_d in [1,2]:
+            img_2 = img[delta_d:-delta_d, delta_d:-delta_d]
+            img_3 = img[(delta_d+delta_d):, delta_d:-delta_d]
+            std_img_2 = cv2.resize(img_2, (image_size, image_size), interpolation=cv2.INTER_CUBIC)
+            std_img_3 = cv2.resize(img_3, (image_size, image_size), interpolation=cv2.INTER_CUBIC)
+            cv2.imwrite(str_.join((data_dir+'/expand_distance', str(i), 'chgdst', str(delta_d), '.jpg')), std_img_2)
+            cv2.imwrite(str_.join((data_dir+'/expand_distance', str(i), 'chgdst', str(delta_d), '_other_cut.jpg')), std_img_3)
 
         i = i + 1
 
@@ -324,6 +335,6 @@ if __name__ == "__main__":
     # a, b = load_pics_as_mats(["temp"])
     # print(a[1])
     this_dir = 'E:/Cache/GitHub/Dynamic-Human-Face-Recognition-System/ConvNN/'
-    expand_dataset(this_dir+'users_data/ikx1_data')
+    # expand_dataset(this_dir+'users_data/new_non_3_data')
     # users = load_registred_user()
     # print(users)

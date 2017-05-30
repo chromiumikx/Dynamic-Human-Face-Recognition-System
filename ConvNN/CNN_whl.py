@@ -266,14 +266,14 @@ def train(x, y, x_test, y_test, is_load=False, user_name=None):
         log_tset_acc = []
 
         for i in range(max_steps):
-            for batch_xs, batch_ys in get_patch(x, y, len(x)-1):
+            for batch_xs, batch_ys in get_patch(x, y, 500):
                 # 传入每次的训练数据，字典形式
-                _, acc_training, loss, output_prediction_val = sess.run([train_step, accuracy, cross_entropy, output_prediction],
+                _, acc_training, train_loss, output_prediction_val = sess.run([train_step, accuracy, cross_entropy, output_prediction],
                                                                         feed_dict={x_ph: batch_xs, y_ph: batch_ys, keep_prob: 0.5})
                 print("ACC:"+str(acc_training))
-                print("LOSS:"+str(loss))
-                log_loss.append(loss)
-                # print("OUT:" + str(output_prediction_val))
+                print("LOSS:"+str(train_loss))
+            log_loss.append(train_loss)
+            # print("OUT:" + str(output_prediction_val))
 
             # feed测试集的时候，keep_prob为1
             # 对于训练集，则是0.5或别的，这主要是为了让训练的网络有泛化的能力

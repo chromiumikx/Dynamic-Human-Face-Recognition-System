@@ -2,9 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="77761a31-db34-4e83-bb12-a26e214c8dc9" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ConvNN/CNN_whl.py" afterPath="$PROJECT_DIR$/ConvNN/CNN_whl.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ConvNN/cam_faces_whl.py" afterPath="$PROJECT_DIR$/ConvNN/cam_faces_whl.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ConvNN/io_whl.py" afterPath="$PROJECT_DIR$/ConvNN/io_whl.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ConvNN/para_config.py" afterPath="$PROJECT_DIR$/ConvNN/para_config.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -22,8 +23,8 @@
       <file leaf-file-name="cam_faces_whl.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/ConvNN/cam_faces_whl.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="261">
-              <caret line="98" column="56" lean-forward="false" selection-start-line="98" selection-start-column="56" selection-end-line="98" selection-end-column="56" />
+            <state relative-caret-position="140">
+              <caret line="98" column="65" lean-forward="false" selection-start-line="98" selection-start-column="65" selection-end-line="98" selection-end-column="65" />
               <folding>
                 <element signature="e#1118#1129#0" expanded="true" />
                 <element signature="e#3510#4432#0" expanded="false" />
@@ -32,17 +33,20 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="CNN_whl.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="CNN_whl.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/ConvNN/CNN_whl.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1693">
-              <caret line="367" column="41" lean-forward="false" selection-start-line="367" selection-start-column="41" selection-end-line="367" selection-end-column="41" />
+            <state relative-caret-position="215">
+              <caret line="193" column="63" lean-forward="false" selection-start-line="193" selection-start-column="63" selection-end-line="193" selection-end-column="63" />
               <folding>
                 <element signature="e#1117#1140#0" expanded="true" />
                 <element signature="e#1252#2410#0" expanded="false" />
                 <element signature="e#2436#4138#0" expanded="false" />
                 <element signature="e#4246#4994#0" expanded="false" />
                 <element signature="e#5132#6117#0" expanded="false" />
+                <element signature="e#6188#10010#0" expanded="false" />
+                <element signature="e#10049#12175#0" expanded="false" />
+                <element signature="e#12197#13532#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -51,7 +55,7 @@
       <file leaf-file-name="identify_frwk.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/ConvNN/identify_frwk.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="390">
+            <state relative-caret-position="-1990">
               <caret line="30" column="0" lean-forward="false" selection-start-line="30" selection-start-column="0" selection-end-line="30" selection-end-column="0" />
               <folding>
                 <element signature="e#1117#1151#0" expanded="true" />
@@ -63,30 +67,30 @@
       <file leaf-file-name="detection_whl.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/ConvNN/detection_whl.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="421">
-              <caret line="65" column="41" lean-forward="false" selection-start-line="65" selection-start-column="41" selection-end-line="65" selection-end-column="41" />
+            <state relative-caret-position="320">
+              <caret line="94" column="105" lean-forward="false" selection-start-line="94" selection-start-column="76" selection-end-line="94" selection-end-column="105" />
               <folding>
                 <element signature="e#1117#1127#0" expanded="true" />
-                <element signature="e#2056#2779#0" expanded="false" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="io_whl.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="io_whl.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/ConvNN/io_whl.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="316">
-              <caret line="326" column="44" lean-forward="false" selection-start-line="326" selection-start-column="44" selection-end-line="326" selection-end-column="44" />
+            <state relative-caret-position="158">
+              <caret line="99" column="0" lean-forward="false" selection-start-line="99" selection-start-column="0" selection-end-line="99" selection-end-column="0" />
               <folding>
                 <element signature="e#1117#1126#0" expanded="true" />
-                <element signature="e#1229#2138#0" expanded="false" />
-                <element signature="e#2178#2591#0" expanded="false" />
-                <element signature="e#2651#3093#0" expanded="false" />
-                <element signature="e#3135#3981#0" expanded="false" />
-                <element signature="e#4039#5093#0" expanded="false" />
-                <element signature="e#5130#6167#0" expanded="false" />
-                <element signature="e#7374#7658#0" expanded="false" />
+                <element signature="e#1262#2171#0" expanded="false" />
+                <element signature="e#2211#2624#0" expanded="false" />
+                <element signature="e#2684#3126#0" expanded="false" />
+                <element signature="e#3168#4014#0" expanded="false" />
+                <element signature="e#4072#5126#0" expanded="false" />
+                <element signature="e#5163#6200#0" expanded="false" />
+                <element signature="e#6237#8011#0" expanded="false" />
+                <element signature="e#8045#8329#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -95,8 +99,8 @@
       <file leaf-file-name="para_config.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/ConvNN/para_config.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="226">
-              <caret line="24" column="3" lean-forward="false" selection-start-line="24" selection-start-column="3" selection-end-line="24" selection-end-column="3" />
+            <state relative-caret-position="405">
+              <caret line="33" column="32" lean-forward="false" selection-start-line="33" selection-start-column="32" selection-end-line="33" selection-end-column="32" />
               <folding />
             </state>
           </provider>
@@ -157,12 +161,12 @@
         <option value="$PROJECT_DIR$/ConvNN/registered_users_name.txt" />
         <option value="$PROJECT_DIR$/myNNwheel/const_config.py" />
         <option value="$PROJECT_DIR$/myNNwheel/tensorflowTrainer.py" />
-        <option value="$PROJECT_DIR$/ConvNN/para_config.py" />
         <option value="$PROJECT_DIR$/ConvNN/identify_frwk.py" />
         <option value="$PROJECT_DIR$/ConvNN/detection_whl.py" />
         <option value="$PROJECT_DIR$/ConvNN/cam_faces_whl.py" />
         <option value="$PROJECT_DIR$/ConvNN/CNN_whl.py" />
         <option value="$PROJECT_DIR$/ConvNN/io_whl.py" />
+        <option value="$PROJECT_DIR$/ConvNN/para_config.py" />
       </list>
     </option>
   </component>
@@ -473,14 +477,14 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1382" height="784" extended-state="7" />
+    <frame x="-8" y="-8" width="1382" height="784" extended-state="6" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.23499268" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.26597324" sideWeight="0.5058565" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32903227" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25557205" sideWeight="0.4941435" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24962853" sideWeight="0.4941435" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24962178" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32903227" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
@@ -681,16 +685,16 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/ConvNN/para_config.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="226">
-          <caret line="24" column="3" lean-forward="false" selection-start-line="24" selection-start-column="3" selection-end-line="24" selection-end-column="3" />
+        <state relative-caret-position="405">
+          <caret line="33" column="32" lean-forward="false" selection-start-line="33" selection-start-column="32" selection-end-line="33" selection-end-column="32" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/ConvNN/cam_faces_whl.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="261">
-          <caret line="98" column="56" lean-forward="false" selection-start-line="98" selection-start-column="56" selection-end-line="98" selection-end-column="56" />
+        <state relative-caret-position="140">
+          <caret line="98" column="65" lean-forward="false" selection-start-line="98" selection-start-column="65" selection-end-line="98" selection-end-column="65" />
           <folding>
             <element signature="e#1118#1129#0" expanded="true" />
             <element signature="e#3510#4432#0" expanded="false" />
@@ -698,9 +702,26 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/ConvNN/CNN_whl.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="215">
+          <caret line="193" column="63" lean-forward="false" selection-start-line="193" selection-start-column="63" selection-end-line="193" selection-end-column="63" />
+          <folding>
+            <element signature="e#1117#1140#0" expanded="true" />
+            <element signature="e#1252#2410#0" expanded="false" />
+            <element signature="e#2436#4138#0" expanded="false" />
+            <element signature="e#4246#4994#0" expanded="false" />
+            <element signature="e#5132#6117#0" expanded="false" />
+            <element signature="e#6188#10010#0" expanded="false" />
+            <element signature="e#10049#12175#0" expanded="false" />
+            <element signature="e#12197#13532#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/ConvNN/identify_frwk.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="390">
+        <state relative-caret-position="-1990">
           <caret line="30" column="0" lean-forward="false" selection-start-line="30" selection-start-column="0" selection-end-line="30" selection-end-column="0" />
           <folding>
             <element signature="e#1117#1151#0" expanded="true" />
@@ -710,42 +731,28 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/ConvNN/detection_whl.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="421">
-          <caret line="65" column="41" lean-forward="false" selection-start-line="65" selection-start-column="41" selection-end-line="65" selection-end-column="41" />
+        <state relative-caret-position="320">
+          <caret line="94" column="105" lean-forward="false" selection-start-line="94" selection-start-column="76" selection-end-line="94" selection-end-column="105" />
           <folding>
             <element signature="e#1117#1127#0" expanded="true" />
-            <element signature="e#2056#2779#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/ConvNN/io_whl.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="316">
-          <caret line="326" column="44" lean-forward="false" selection-start-line="326" selection-start-column="44" selection-end-line="326" selection-end-column="44" />
+        <state relative-caret-position="158">
+          <caret line="99" column="0" lean-forward="false" selection-start-line="99" selection-start-column="0" selection-end-line="99" selection-end-column="0" />
           <folding>
             <element signature="e#1117#1126#0" expanded="true" />
-            <element signature="e#1229#2138#0" expanded="false" />
-            <element signature="e#2178#2591#0" expanded="false" />
-            <element signature="e#2651#3093#0" expanded="false" />
-            <element signature="e#3135#3981#0" expanded="false" />
-            <element signature="e#4039#5093#0" expanded="false" />
-            <element signature="e#5130#6167#0" expanded="false" />
-            <element signature="e#7374#7658#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ConvNN/CNN_whl.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1693">
-          <caret line="367" column="41" lean-forward="false" selection-start-line="367" selection-start-column="41" selection-end-line="367" selection-end-column="41" />
-          <folding>
-            <element signature="e#1117#1140#0" expanded="true" />
-            <element signature="e#1252#2410#0" expanded="false" />
-            <element signature="e#2436#4138#0" expanded="false" />
-            <element signature="e#4246#4994#0" expanded="false" />
-            <element signature="e#5132#6117#0" expanded="false" />
+            <element signature="e#1262#2171#0" expanded="false" />
+            <element signature="e#2211#2624#0" expanded="false" />
+            <element signature="e#2684#3126#0" expanded="false" />
+            <element signature="e#3168#4014#0" expanded="false" />
+            <element signature="e#4072#5126#0" expanded="false" />
+            <element signature="e#5163#6200#0" expanded="false" />
+            <element signature="e#6237#8011#0" expanded="false" />
+            <element signature="e#8045#8329#0" expanded="false" />
           </folding>
         </state>
       </provider>

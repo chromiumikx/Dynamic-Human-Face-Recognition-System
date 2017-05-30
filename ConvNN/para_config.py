@@ -30,5 +30,6 @@ learning_rate = 1e-4
 conv_layers = 2
 fc_layers = 2
 dropout_keep_prob = 0.5
-max_steps = 200
+max_steps = 130
+target_accuracy = 0.995 # 要求网络学习的精度
 non_user_dir = "new_non_3" # 启用的负面数据集

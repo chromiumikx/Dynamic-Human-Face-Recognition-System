@@ -331,6 +331,21 @@ def load_registred_user():
         return users
 
 
+def calc_pic_attributes(pic_dir, user_name):
+    _pics = os.listdir(pic_dir)
+
+    # 计算直方图，也为图像亮度属性提供数据
+    hists = np.zeros([256, 1])
+    for _pic in _pics:
+        img = cv2.imread((pic_dir+'/'+_pic),  cv2.IMREAD_GRAYSCALE)
+        h = cv2.calcHist([img],[0],None,[256],[0,256])
+        hists = hists + h
+
+    average_hist = hists/len(_pics)
+    plt.plot(average_hist, label=user_name)
+    # plt.show()
+
+
 if __name__ == "__main__":
     # a, b = load_pics_as_mats(["temp"])
     # print(a[1])
@@ -338,3 +353,19 @@ if __name__ == "__main__":
     # expand_dataset(this_dir+'users_data/new_non_3_data')
     # users = load_registred_user()
     # print(users)
+    calc_pic_attributes(this_dir+'/users_data/ikx_data', 'ikx')
+    calc_pic_attributes(this_dir + '/users_data/ikx1_data', 'ikx1')
+    calc_pic_attributes(this_dir + '/users_data/qin_data', 'qin')
+    calc_pic_attributes(this_dir + '/users_data/new_non_3_data', 'new_non_3')
+    plt.legend()  # 展示图例
+    plt.show()
+
+    img_1 = cv2.imread(this_dir+'/users_data/ikx_data/face_17_1.jpg', 0)
+    img = cv2.resize(img_1, (100, 100), interpolation=cv2.INTER_CUBIC)
+    equ = cv2.equalizeHist(img)
+    res = np.hstack((img, equ))
+    # stacking images side-by-side
+    cv2.imshow('res', res)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+

@@ -114,6 +114,9 @@ if __name__ == "__main__":
                 _, frame = cap.read()
                 cv2.flip(frame, 1, frame)  # mirror the image 翻转图片
                 face_area = detect_faces(frame, face_cascade)
+                for i_face_area in face_area:
+                    print("range-x:", i_face_area[2] - i_face_area[0])
+                    print("range-y:", i_face_area[3] - i_face_area[1])
                 face_mat = get_faces_mat(frame, face_area)
                 save_face_pics(face_mat, "temp", collect_face_count)
                 # print(collect_face_count)

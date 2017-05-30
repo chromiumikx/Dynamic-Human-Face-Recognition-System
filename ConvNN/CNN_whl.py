@@ -264,6 +264,7 @@ def train(x, y, x_test, y_test, is_load=False, user_name=None):
 
         log_loss = []
         log_tset_acc = []
+        pre_accuracy_test_value = 0
 
         for i in range(max_steps):
             for batch_xs, batch_ys in get_patch(x, y, 500):
@@ -277,9 +278,19 @@ def train(x, y, x_test, y_test, is_load=False, user_name=None):
 
             # feed测试集的时候，keep_prob为1
             # 对于训练集，则是0.5或别的，这主要是为了让训练的网络有泛化的能力
-            accuracy_test_value = sess.run([accuracy], feed_dict={x_ph: x_test, y_ph: y_test, keep_prob: 1})
-            print("ACC of test in "+str(i)+str(accuracy_test_value))
+            [accuracy_test_value] = sess.run([accuracy], feed_dict={x_ph: x_test, y_ph: y_test, keep_prob: 1})
+            print("ACC of test in "+str(i)+": "+str(accuracy_test_value))
             log_tset_acc.append(accuracy_test_value)
+
+            # 测试集和训练集的训练精度达到一定要求即停止训练
+            if pre_accuracy_test_value != accuracy_test_value:
+                pre_accuracy_test_value = accuracy_test_value
+            else:
+                break
+
+            if (acc_training>target_accuracy) and (accuracy_test_value>target_accuracy):
+                print("Accuracy done.")
+                break
 
         show_info("Training Loss", "LOSS", [log_loss], ["NtoN"])
         show_info("Test Accuracy", "ACC", [log_tset_acc], ["NtoN"])

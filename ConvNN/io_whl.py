@@ -307,6 +307,9 @@ def expand_dataset(data_dir):
 
         i = i + 1
 
+    # 作直方图均衡
+    # equ = cv2.equalizeHist(img)
+
 
 def load_registred_user():
     """载入已注册用户的用户名
@@ -325,9 +328,11 @@ def load_registred_user():
     """
 
     _dir = "registered_users_name.txt"
+    users = {}
     with open(_dir, "r") as f:
-        temp = f.readline()
-        users = [k for k in temp.split()]
+        temps = f.readlines()
+        for temp in temps:
+            users.update({k: k for k in temp.split()})
         return users
 
 
@@ -342,30 +347,31 @@ def calc_pic_attributes(pic_dir, user_name):
         hists = hists + h
 
     average_hist = hists/len(_pics)
-    plt.plot(average_hist, label=user_name)
+    # plt.plot(average_hist, label=user_name)
     # plt.show()
+
+    light = 0
+    for i in range(len(average_hist)):
+        light = light + i*average_hist[i]
+
+    return light/sum(average_hist)
 
 
 if __name__ == "__main__":
     # a, b = load_pics_as_mats(["temp"])
     # print(a[1])
-    this_dir = 'E:/Cache/GitHub/Dynamic-Human-Face-Recognition-System/ConvNN/'
+
+    # this_dir = 'E:/Cache/GitHub/Dynamic-Human-Face-Recognition-System/ConvNN/'
+
     # expand_dataset(this_dir+'users_data/new_non_3_data')
+
     # users = load_registred_user()
     # print(users)
-    calc_pic_attributes(this_dir+'/users_data/ikx_data', 'ikx')
-    calc_pic_attributes(this_dir + '/users_data/ikx1_data', 'ikx1')
-    calc_pic_attributes(this_dir + '/users_data/qin_data', 'qin')
-    calc_pic_attributes(this_dir + '/users_data/new_non_3_data', 'new_non_3')
-    plt.legend()  # 展示图例
-    plt.show()
 
-    img_1 = cv2.imread(this_dir+'/users_data/ikx_data/face_17_1.jpg', 0)
-    img = cv2.resize(img_1, (100, 100), interpolation=cv2.INTER_CUBIC)
-    equ = cv2.equalizeHist(img)
-    res = np.hstack((img, equ))
-    # stacking images side-by-side
-    cv2.imshow('res', res)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
-
+    print(calc_pic_attributes('users_data/ikx_data', 'ikx'))
+    # print(calc_pic_attributes('users_data/ikx1_data', 'ikx1'))
+    # print(calc_pic_attributes('users_data/qin_data', 'qin'))
+    # print(calc_pic_attributes('users_data/new_non_3_data', 'new_non_3'))
+    # print(calc_pic_attributes('users_data/temp_data', 'temp'))
+    # plt.legend()  # 展示图例
+    # plt.show()

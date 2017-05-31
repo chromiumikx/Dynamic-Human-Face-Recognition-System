@@ -57,8 +57,10 @@ if __name__ == "__main__":
     print("Human Face Recognition System v0.9")
     user_name = "0" # input("Input your name:") # 不再需要输入用户名，可以自动搜索
     user_id = "0" # input("Input your id:") # 不再需要输入用户名，可以自动搜索
-    model_name = load_registred_user()
+    dict_model_name = load_registred_user()
     net_save_path = {}
+    model_name = list(dict_model_name.values())
+    print(model_name)
     for i_model_name in model_name:
         net_save_path[i_model_name] = "/models/model_" + i_model_name + ".ckpt"
     # try:
@@ -114,9 +116,11 @@ if __name__ == "__main__":
                 _, frame = cap.read()
                 cv2.flip(frame, 1, frame)  # mirror the image 翻转图片
                 face_area = detect_faces(frame, face_cascade)
-                for i_face_area in face_area:
-                    print("range-x:", i_face_area[2] - i_face_area[0])
-                    print("range-y:", i_face_area[3] - i_face_area[1])
+                # 检测到的人脸大小为240像素左右，清晰度足够
+                # 但是会检测到头发，但是非用户组的数据比较少头发
+                # for i_face_area in face_area:
+                #     print("range-x:", i_face_area[2] - i_face_area[0])
+                #     print("range-y:", i_face_area[3] - i_face_area[1])
                 face_mat = get_faces_mat(frame, face_area)
                 save_face_pics(face_mat, "temp", collect_face_count)
                 # print(collect_face_count)
@@ -137,42 +141,46 @@ if __name__ == "__main__":
                     lock_face_count = 0
                     collect_face_count = 0
 
-                    x_pics, y_labels = load_pics_as_mats(["temp"])
-                    # print(len(x_pics))
-                    x_tt = []
-                    y_tt = []
-                    for i_pic in x_pics:
-                        i_pic.resize((1, image_size * image_size))
-                        x_tt.append(i_pic[0])  # resize后只取第一行，否则取的是二维数组，维度大小（1，1024）的
-                        y_tt.append([0, 1.])
-                    x_tt = np.array(x_tt)
-                    y_tt = np.array(y_tt)
-                    accuracy_value = {} # 重置
-                    print(accuracy_value)
-                    '''
-                    要求系统必须已经有一个用户（模型）
-                    找出和现有模型匹配度最大的用户的名字
-                    '''
-                    target_user_name = model_name[0]
-                    for i_model_name in model_name:
-                        pre_saver.restore(sess, net_save_path[i_model_name])
-                        [accuracy_value[i_model_name]] = sess.run([accuracy], feed_dict={x_ph: x_tt, y_ph: y_tt, keep_prob: 1})
-                        if accuracy_value[i_model_name] > accuracy_value[target_user_name]:
-                            target_user_name = i_model_name
+                    light = calc_pic_attributes('users_data/temp_data', 'temp')
+                    print(light)
+                    if light > light_control:
+                        x_pics, y_labels = load_pics_as_mats(["temp"])
+                        # print(len(x_pics))
+                        x_tt = []
+                        y_tt = []
+                        for i_pic in x_pics:
+                            i_pic.resize((1, image_size * image_size))
+                            x_tt.append(i_pic[0])  # resize后只取第一行，否则取的是二维数组，维度大小（1，1024）的
+                            y_tt.append([0, 1.])
+                        x_tt = np.array(x_tt)
+                        y_tt = np.array(y_tt)
+                        '''
+                        要求系统必须已经有一个用户（模型）
+                        找出和现有模型匹配度最大的用户的名字
+                        '''
+                        accuracy_value = {} # 重置
+                        target_user_name = model_name[0]
+                        print(len(model_name))
+                        for i_model_name in model_name:
+                            pre_saver.restore(sess, net_save_path[i_model_name])
+                            [accuracy_value[i_model_name]] = sess.run([accuracy], feed_dict={x_ph: x_tt, y_ph: y_tt, keep_prob: 1})
+                            if accuracy_value[i_model_name] > accuracy_value[target_user_name]:
+                                target_user_name = i_model_name
 
-                    print("Accuracy is: ")
-                    print(accuracy_value)
-                    if accuracy_value[target_user_name] > 0.9:
-                        for (x1, y1, x2, y2) in face_area:
-                            cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 1)
-                            font = cv2.FONT_HERSHEY_SIMPLEX
-                            str_match = 'match ' + target_user_name
-                            cv2.putText(frame, str_match, (x1, y1), font, 2, (0, 255, 0), 2)
-                    else:
-                        for (x1, y1, x2, y2) in face_area:
-                            cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 0, 255), 1)
-                            font = cv2.FONT_HERSHEY_SIMPLEX
-                            cv2.putText(frame, 'no this user', (x1, y1), font, 2, (0, 0, 255), 2)
+                        print("Accuracy is: ")
+                        print(accuracy_value)
+                        # 对结果进行标记显示
+                        if accuracy_value[target_user_name] > 0.9:
+                            for (x1, y1, x2, y2) in face_area:
+                                cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 1)
+                                font = cv2.FONT_HERSHEY_SIMPLEX
+                                str_match = 'match ' + target_user_name
+                                cv2.putText(frame, str_match, (x1, y1), font, 2, (0, 255, 0), 2)
+                        else:
+                            for (x1, y1, x2, y2) in face_area:
+                                cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 0, 255), 1)
+                                font = cv2.FONT_HERSHEY_SIMPLEX
+                                cv2.putText(frame, 'no this user', (x1, y1), font, 2, (0, 0, 255), 2)
 
                     # 每次重新录取待检测新用户数据前删除已经检测过的数据
                     _p = os.getcwd()

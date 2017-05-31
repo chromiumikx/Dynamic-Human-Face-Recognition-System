@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="77761a31-db34-4e83-bb12-a26e214c8dc9" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ConvNN/CNN_whl.py" afterPath="$PROJECT_DIR$/ConvNN/CNN_whl.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ConvNN/identify_frwk.py" afterPath="$PROJECT_DIR$/ConvNN/identify_frwk.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ConvNN/io_whl.py" afterPath="$PROJECT_DIR$/ConvNN/io_whl.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ConvNN/para_config.py" afterPath="$PROJECT_DIR$/ConvNN/para_config.py" />
@@ -37,26 +36,24 @@
       <file leaf-file-name="CNN_whl.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/ConvNN/CNN_whl.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2085">
-              <caret line="289" column="0" lean-forward="false" selection-start-line="289" selection-start-column="0" selection-end-line="289" selection-end-column="0" />
+            <state relative-caret-position="129">
+              <caret line="51" column="24" lean-forward="false" selection-start-line="51" selection-start-column="24" selection-end-line="51" selection-end-column="24" />
               <folding>
                 <element signature="e#1117#1140#0" expanded="true" />
-                <element signature="e#1252#2410#0" expanded="false" />
                 <element signature="e#2436#4138#0" expanded="false" />
                 <element signature="e#4246#4994#0" expanded="false" />
                 <element signature="e#5132#6117#0" expanded="false" />
                 <element signature="e#10448#12574#0" expanded="false" />
-                <element signature="e#12596#13931#0" expanded="false" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="identify_frwk.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="identify_frwk.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/ConvNN/identify_frwk.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1755">
-              <caret line="118" column="32" lean-forward="false" selection-start-line="118" selection-start-column="32" selection-end-line="118" selection-end-column="32" />
+            <state relative-caret-position="273">
+              <caret line="145" column="45" lean-forward="true" selection-start-line="145" selection-start-column="45" selection-end-line="145" selection-end-column="45" />
               <folding>
                 <element signature="e#1117#1151#0" expanded="true" />
               </folding>
@@ -67,7 +64,7 @@
       <file leaf-file-name="detection_whl.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/ConvNN/detection_whl.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="900">
+            <state relative-caret-position="378">
               <caret line="61" column="77" lean-forward="false" selection-start-line="61" selection-start-column="77" selection-end-line="61" selection-end-column="77" />
               <folding>
                 <element signature="e#1117#1127#0" expanded="true" />
@@ -76,21 +73,18 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="io_whl.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="io_whl.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/ConvNN/io_whl.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="269">
-              <caret line="362" column="63" lean-forward="false" selection-start-line="362" selection-start-column="63" selection-end-line="362" selection-end-column="63" />
+            <state relative-caret-position="333">
+              <caret line="374" column="32" lean-forward="true" selection-start-line="374" selection-start-column="32" selection-end-line="374" selection-end-column="32" />
               <folding>
                 <element signature="e#1117#1126#0" expanded="true" />
-                <element signature="e#1262#2171#0" expanded="false" />
                 <element signature="e#2211#2624#0" expanded="false" />
                 <element signature="e#2684#3126#0" expanded="false" />
                 <element signature="e#3168#4014#0" expanded="false" />
                 <element signature="e#4072#5126#0" expanded="false" />
                 <element signature="e#5163#6200#0" expanded="false" />
-                <element signature="e#6237#8011#0" expanded="false" />
-                <element signature="e#8045#8329#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -99,8 +93,8 @@
       <file leaf-file-name="para_config.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/ConvNN/para_config.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="480">
-              <caret line="32" column="15" lean-forward="false" selection-start-line="32" selection-start-column="15" selection-end-line="32" selection-end-column="15" />
+            <state relative-caret-position="378">
+              <caret line="36" column="13" lean-forward="false" selection-start-line="36" selection-start-column="0" selection-end-line="36" selection-end-column="13" />
               <folding />
             </state>
           </provider>
@@ -163,10 +157,10 @@
         <option value="$PROJECT_DIR$/myNNwheel/tensorflowTrainer.py" />
         <option value="$PROJECT_DIR$/ConvNN/detection_whl.py" />
         <option value="$PROJECT_DIR$/ConvNN/cam_faces_whl.py" />
-        <option value="$PROJECT_DIR$/ConvNN/identify_frwk.py" />
-        <option value="$PROJECT_DIR$/ConvNN/para_config.py" />
         <option value="$PROJECT_DIR$/ConvNN/CNN_whl.py" />
         <option value="$PROJECT_DIR$/ConvNN/io_whl.py" />
+        <option value="$PROJECT_DIR$/ConvNN/para_config.py" />
+        <option value="$PROJECT_DIR$/ConvNN/identify_frwk.py" />
       </list>
     </option>
   </component>
@@ -194,6 +188,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -222,7 +217,6 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
       <pane id="Scratches" />
     </panes>
   </component>
@@ -261,7 +255,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.io_whl">
+  <component name="RunManager" selected="Python.identify_frwk">
     <configuration default="false" name="CNN_whl" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -425,9 +419,9 @@
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Python.io_whl" />
-        <item index="1" class="java.lang.String" itemvalue="Python.CNN_whl" />
-        <item index="2" class="java.lang.String" itemvalue="Python.identify_frwk" />
+        <item index="0" class="java.lang.String" itemvalue="Python.identify_frwk" />
+        <item index="1" class="java.lang.String" itemvalue="Python.io_whl" />
+        <item index="2" class="java.lang.String" itemvalue="Python.CNN_whl" />
         <item index="3" class="java.lang.String" itemvalue="Python.tensorflowTrainer" />
         <item index="4" class="java.lang.String" itemvalue="Python.myNNtrainer" />
       </list>
@@ -460,15 +454,14 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="784" extended-state="7" />
-    <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.23827533" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24205749" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.26597324" sideWeight="0.5058565" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32615384" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.34" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24923077" sideWeight="0.4941435" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24923077" sideWeight="0.4941435" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24962178" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3276923" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
@@ -490,7 +483,7 @@
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
-      <option name="time" value="26" />
+      <option name="time" value="27" />
     </breakpoint-manager>
     <watches-manager>
       <configuration name="PythonConfigurationType">
@@ -615,13 +608,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ConvNN/registered_users_name.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="12" lean-forward="false" selection-start-line="0" selection-start-column="12" selection-end-line="0" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/myNNwheel/ACC_test_0.0001_32.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -676,9 +662,32 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/ConvNN/res.png" />
+    <entry file="file://$PROJECT_DIR$/ConvNN/registered_users_name.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="15">
+          <caret line="1" column="22" lean-forward="true" selection-start-line="1" selection-start-column="22" selection-end-line="1" selection-end-column="22" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ConvNN/CNN_whl.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="129">
+          <caret line="51" column="24" lean-forward="false" selection-start-line="51" selection-start-column="24" selection-end-line="51" selection-end-column="24" />
+          <folding>
+            <element signature="e#1117#1140#0" expanded="true" />
+            <element signature="e#2436#4138#0" expanded="false" />
+            <element signature="e#4246#4994#0" expanded="false" />
+            <element signature="e#5132#6117#0" expanded="false" />
+            <element signature="e#10448#12574#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/ConvNN/detection_whl.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="900">
+        <state relative-caret-position="378">
           <caret line="61" column="77" lean-forward="false" selection-start-line="61" selection-start-column="77" selection-end-line="61" selection-end-column="77" />
           <folding>
             <element signature="e#1117#1127#0" expanded="true" />
@@ -686,59 +695,35 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ConvNN/identify_frwk.py">
+    <entry file="file://$PROJECT_DIR$/ConvNN/io_whl.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1755">
-          <caret line="118" column="32" lean-forward="false" selection-start-line="118" selection-start-column="32" selection-end-line="118" selection-end-column="32" />
+        <state relative-caret-position="333">
+          <caret line="374" column="32" lean-forward="true" selection-start-line="374" selection-start-column="32" selection-end-line="374" selection-end-column="32" />
           <folding>
-            <element signature="e#1117#1151#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ConvNN/CNN_whl.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2085">
-          <caret line="289" column="0" lean-forward="false" selection-start-line="289" selection-start-column="0" selection-end-line="289" selection-end-column="0" />
-          <folding>
-            <element signature="e#1117#1140#0" expanded="true" />
-            <element signature="e#1252#2410#0" expanded="false" />
-            <element signature="e#2436#4138#0" expanded="false" />
-            <element signature="e#4246#4994#0" expanded="false" />
-            <element signature="e#5132#6117#0" expanded="false" />
-            <element signature="e#10448#12574#0" expanded="false" />
-            <element signature="e#12596#13931#0" expanded="false" />
+            <element signature="e#1117#1126#0" expanded="true" />
+            <element signature="e#2211#2624#0" expanded="false" />
+            <element signature="e#2684#3126#0" expanded="false" />
+            <element signature="e#3168#4014#0" expanded="false" />
+            <element signature="e#4072#5126#0" expanded="false" />
+            <element signature="e#5163#6200#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/ConvNN/para_config.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="480">
-          <caret line="32" column="15" lean-forward="false" selection-start-line="32" selection-start-column="15" selection-end-line="32" selection-end-column="15" />
+        <state relative-caret-position="378">
+          <caret line="36" column="13" lean-forward="false" selection-start-line="36" selection-start-column="0" selection-end-line="36" selection-end-column="13" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ConvNN/res.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ConvNN/io_whl.py">
+    <entry file="file://$PROJECT_DIR$/ConvNN/identify_frwk.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="269">
-          <caret line="362" column="63" lean-forward="false" selection-start-line="362" selection-start-column="63" selection-end-line="362" selection-end-column="63" />
+        <state relative-caret-position="273">
+          <caret line="145" column="45" lean-forward="true" selection-start-line="145" selection-start-column="45" selection-end-line="145" selection-end-column="45" />
           <folding>
-            <element signature="e#1117#1126#0" expanded="true" />
-            <element signature="e#1262#2171#0" expanded="false" />
-            <element signature="e#2211#2624#0" expanded="false" />
-            <element signature="e#2684#3126#0" expanded="false" />
-            <element signature="e#3168#4014#0" expanded="false" />
-            <element signature="e#4072#5126#0" expanded="false" />
-            <element signature="e#5163#6200#0" expanded="false" />
-            <element signature="e#6237#8011#0" expanded="false" />
-            <element signature="e#8045#8329#0" expanded="false" />
+            <element signature="e#1117#1151#0" expanded="true" />
           </folding>
         </state>
       </provider>

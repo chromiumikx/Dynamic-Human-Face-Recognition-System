@@ -34,4 +34,4 @@ max_steps = 130
 target_accuracy = 0.995 # 要求网络学习的精度
 non_user_dir = "new_non_3" # 启用的负面数据集
 
-light_control = 120
+light_control = 100

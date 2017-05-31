@@ -107,6 +107,7 @@ if __name__ == "__main__":
 
 
             cap = cv2.VideoCapture(0)
+            text_font = cv2.FONT_HERSHEY_SIMPLEX
             lock_face_count = 0
             collect_face_count = 0
             while(True):
@@ -137,13 +138,13 @@ if __name__ == "__main__":
                     collect_face_count = collect_face_count + 1
 
                 if collect_face_count == 20:
-                    print("Recognizing...")
                     lock_face_count = 0
                     collect_face_count = 0
 
                     light = calc_pic_attributes('users_data/temp_data', 'temp')
-                    print(light)
+                    # print(light)
                     if light > light_control:
+                        print("Recognizing...")
                         x_pics, y_labels = load_pics_as_mats(["temp"])
                         # print(len(x_pics))
                         x_tt = []
@@ -160,7 +161,6 @@ if __name__ == "__main__":
                         '''
                         accuracy_value = {} # 重置
                         target_user_name = model_name[0]
-                        print(len(model_name))
                         for i_model_name in model_name:
                             pre_saver.restore(sess, net_save_path[i_model_name])
                             [accuracy_value[i_model_name]] = sess.run([accuracy], feed_dict={x_ph: x_tt, y_ph: y_tt, keep_prob: 1})
@@ -173,14 +173,12 @@ if __name__ == "__main__":
                         if accuracy_value[target_user_name] > 0.9:
                             for (x1, y1, x2, y2) in face_area:
                                 cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 1)
-                                font = cv2.FONT_HERSHEY_SIMPLEX
                                 str_match = 'match ' + target_user_name
-                                cv2.putText(frame, str_match, (x1, y1), font, 2, (0, 255, 0), 2)
+                                cv2.putText(frame, str_match, (x1, y1), text_font, 2, (0, 255, 0), 2)
                         else:
                             for (x1, y1, x2, y2) in face_area:
                                 cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 0, 255), 1)
-                                font = cv2.FONT_HERSHEY_SIMPLEX
-                                cv2.putText(frame, 'no this user', (x1, y1), font, 2, (0, 0, 255), 2)
+                                cv2.putText(frame, 'no this user', (x1, y1), text_font, 2, (0, 0, 255), 2)
 
                     # 每次重新录取待检测新用户数据前删除已经检测过的数据
                     _p = os.getcwd()

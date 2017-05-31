@@ -214,6 +214,7 @@ def train(x, y, x_test, y_test, is_load=False, user_name=None):
         无
     """
 
+    print('training...')
     graph = tf.Graph()
     with graph.as_default():
         # 占位符，等待传入数据
@@ -283,14 +284,14 @@ def train(x, y, x_test, y_test, is_load=False, user_name=None):
             log_tset_acc.append(accuracy_test_value)
 
             # 测试集和训练集的训练精度达到一定要求即停止训练
-            if pre_accuracy_test_value != accuracy_test_value:
-                pre_accuracy_test_value = accuracy_test_value
-            else:
-                break
-
-            if (acc_training>target_accuracy) and (accuracy_test_value>target_accuracy):
+            # 当前精度重复的时候，且重复时还要求精度达到target精度，否则数据不足够
+            if (acc_training>target_accuracy) and (accuracy_test_value>target_accuracy) \
+                    and (pre_accuracy_test_value == accuracy_test_value):
                 print("Accuracy done.")
                 break
+            # 更新当前精确度
+            if pre_accuracy_test_value != accuracy_test_value:
+                pre_accuracy_test_value = accuracy_test_value
 
         show_info("Training Loss", "LOSS", [log_loss], ["NtoN"])
         show_info("Test Accuracy", "ACC", [log_tset_acc], ["NtoN"])

@@ -56,7 +56,10 @@ def catch_user_face():
     user_id = input("Input your ID:")
 
     print("collecting will start after 3 seconds...")
-    time.sleep(4)
+    for i in range(3):
+        time.sleep(1)
+        print(3-i)
+    print('collecting...')
 
     count_collect_internal = 0
     count_collect_num = 0

@@ -363,15 +363,15 @@ if __name__ == "__main__":
 
     # this_dir = 'E:/Cache/GitHub/Dynamic-Human-Face-Recognition-System/ConvNN/'
 
-    # expand_dataset(this_dir+'users_data/new_non_3_data')
+    # expand_dataset('users_data/add_new_non_temp_data')
 
-    # users = load_registred_user()
-    # print(users)
+    users = load_registred_user()
+    print(users)
 
-    print(calc_pic_attributes('users_data/ikx_data', 'ikx'))
+    # print(calc_pic_attributes('users_data/ikx_data', 'ikx'))
     # print(calc_pic_attributes('users_data/ikx1_data', 'ikx1'))
     # print(calc_pic_attributes('users_data/qin_data', 'qin'))
-    # print(calc_pic_attributes('users_data/new_non_3_data', 'new_non_3'))
+    print(calc_pic_attributes('users_data/new_non_3_data', 'new_non_3'))
     # print(calc_pic_attributes('users_data/temp_data', 'temp'))
     # plt.legend()  # 展示图例
     # plt.show()

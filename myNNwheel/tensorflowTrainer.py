@@ -248,7 +248,7 @@ if __name__ == "__main__":
     dire = ["ikx", "qin"]
     x, y = reconbineDatasets(dire)
 
-    dire_test = ["ikx", "ikx1"]
+    dire_test = ["qin", "ikx1"]
     x_test, y_test = reconbineDatasets(dire_test)
     run_train(x, y, x_test, y_test, image_size, my_saver, save_path, is_load, result_path, learning_rate)
 

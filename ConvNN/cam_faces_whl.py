@@ -28,6 +28,7 @@ SOFTWARE.
 import time
 from ConvNN.CNN_whl import *
 from ConvNN.detection_whl import *
+from ConvNN.io_whl import *
 
 
 def catch_user_face():
@@ -63,6 +64,7 @@ def catch_user_face():
 
     count_collect_internal = 0
     count_collect_num = 0
+    # pic_collect_
     while(True):
         # Capture frame-by-frame
         # frame的宽、长、深为：(480, 640, 3)
@@ -75,19 +77,19 @@ def catch_user_face():
             cv2.rectangle(frame,(x1,y1),(x2,y2),(100,0,0),1)
 
         count_collect_internal = count_collect_internal+1
-        if count_collect_internal == 3:
+        if count_collect_internal == 4:
             face_mat = get_faces_mat(frame, face_area)
             # ！！！空列表 [] ，在if语句中 等价于 False或None？？？
             if face_mat:
                 count_collect_num = count_collect_num + 1
                 save_face_pics(face_mat, user_name, count_collect_num)
-                cv2.imshow('Cut Face', face_mat[0]) # getFacesMat()返回值为二维列表，是多个face的数值矩阵
+                # cv2.imshow('Cut Face', face_mat[0]) # getFacesMat()返回值为二维列表，是多个face的数值矩阵
 
-        if (count_collect_internal>=3) and (count_collect_internal<=4):
+        if (count_collect_internal>=4) and (count_collect_internal<=5):
             for (x1, y1, x2, y2) in face_area:
                 cv2.rectangle(frame, (x1, y1), (x2, y2), (255, 0, 0), 1)
 
-        if count_collect_internal > 4:
+        if count_collect_internal > 5:
             count_collect_internal = 0
 
         cv2.imshow('Face Detect',frame)
@@ -99,14 +101,11 @@ def catch_user_face():
 
             # 录取完用户数据后，自动增加数据集一次
             _dir = os.getcwd()
-            expand_dataset(_dir+'/users_data/'+user_name+'_data')
-            x, y, x_test, y_test = recombine_data([user_name], [non_user_dir]) # 不能以字符串输入，要以列表形式输入
-            train(x, y, x_test, y_test, False, user_name)
+            # expand_dataset(_dir+'/users_data/'+user_name+'_data')
+            # x, y, x_test, y_test = recombine_data([user_name], [non_user_dir, 'qin']) # 不能以字符串输入，要以列表形式输入
+            # # 自动训练
+            # train(x, y, x_test, y_test, False, user_name)
             break
-
-    # # When everything done, release the capture
-    # cap.release()
-    # cv2.destroyAllWindows()
 
 
 def show_detection():

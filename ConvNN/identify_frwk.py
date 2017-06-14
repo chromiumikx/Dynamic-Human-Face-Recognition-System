@@ -85,9 +85,9 @@ if __name__ == "__main__":
                 x_images = tf.reshape(x_ph, [-1,image_size,image_size,1], name="x_reshape")
 
             with tf.name_scope("Convolution_Layer"):
-                h_pool1 = add_conv_pool_layer(1, x_images, 5, 1, 32, tf.nn.relu)
+                h_pool1 = add_conv_pool_layer(1, x_images, conv_patch_size, 1, 32, tf.nn.relu)
                 h_pool1_dropout = tf.nn.dropout(h_pool1, keep_prob=1)
-                h_pool2 = add_conv_pool_layer(2, h_pool1_dropout, 5, 32, 64, tf.nn.relu)
+                h_pool2 = add_conv_pool_layer(2, h_pool1_dropout, conv_patch_size, 32, 64, tf.nn.relu)
                 h_pool2_flat = tf.reshape(h_pool2, [-1, 8*8*64])
 
             keep_prob = tf.placeholder(tf.float32)
@@ -142,7 +142,7 @@ if __name__ == "__main__":
                     collect_face_count = 0
 
                     light = calc_pic_attributes('users_data/temp_data', 'temp')
-                    # print(light)
+                    print(light)
                     if light > light_control:
                         print("Recognizing...")
                         x_pics, y_labels = load_pics_as_mats(["temp"])
@@ -170,7 +170,7 @@ if __name__ == "__main__":
                         print("Accuracy is: ")
                         print(accuracy_value)
                         # 对结果进行标记显示
-                        if accuracy_value[target_user_name] > 0.9:
+                        if accuracy_value[target_user_name] > demand_recognize_acc:
                             for (x1, y1, x2, y2) in face_area:
                                 cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 1)
                                 str_match = 'match ' + target_user_name

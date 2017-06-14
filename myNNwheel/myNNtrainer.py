@@ -1,14 +1,15 @@
 #-*- coding: UTF-8 -*-
 import cv2
+import os
 import numpy as np
-from readDataset import readStandardData
-from readDataset import readWeights
+from myNNwheel.readDataset import readStandardData
+from myNNwheel.readDataset import readWeights
 
-def trainNeuralNetwork():
+def trainNeuralNetwork(result_path):
     #_________________数据与代码同一目录时用下列代码_________________________
 
     np.random.seed(1)
-
+    max_steps = 1000
     '''
     标准数据拼接、加载
     '''
@@ -53,6 +54,14 @@ def trainNeuralNetwork():
 
     Weights = np.array(Weights)
 
+    # 所指定目录，若不存在则创建
+    try:
+        os.listdir(os.getcwd()).index(result_path)
+    except ValueError:
+        f_ACC = open(result_path, "w+")
+
+    f_ACC = open(result_path, "w+")
+
 
     '''
     模型：整个运算过程
@@ -63,7 +72,7 @@ def trainNeuralNetwork():
     y=np.array(train_labels)
     print(x.shape)
     print(y.shape)
-    for j in range(100):
+    for j in range(max_steps):
         for x_, y_ in getPatch(x, y, patch_size):
             #正常计算网络各层各节点的值
             #正常计算网络各层各节点的值
@@ -75,7 +84,8 @@ def trainNeuralNetwork():
             l2_error=y_-l2
 
             if (np.mean(np.abs(l2_error)) < 0.000001):
-                break
+                pass
+                # break
 
             l2_delta=l2_error*logistic(l2, True)
 
@@ -91,6 +101,9 @@ def trainNeuralNetwork():
         if(j%10)==0:
             print("Error"+str(np.mean(np.abs(l2_error))))
             print("准确：", np.sum(np.argmax(y_, 1) == np.argmax(l2, 1)) / patch_size)
+            f_ACC.write(" " + str(np.sum(np.argmax(y_, 1) == np.argmax(l2, 1)) / patch_size) + " ")
+
+    f_ACC.close()
 
     l1 = logistic(np.dot(x, Weights[0]))
     l2 = logistic(np.dot(l1, Weights[1]))
@@ -101,7 +114,7 @@ def trainNeuralNetwork():
     测试、数据拼接加载、运算
     '''
     # 加载标准输入数据，并进行矩阵拼接，将两张图片拼接在一起作为一个输入
-    test_pics, test_user_id = readStandardData(["sb"])
+    test_pics, test_user_id = readStandardData(["qin","ikx1"])
 
     test_samples = []
     test_labels = []
@@ -176,4 +189,21 @@ def addLayer(layers, current_layer):
 
 
 if __name__ == "__main__":
-    trainNeuralNetwork()
+    import matplotlib.pyplot as plt
+
+    result_path = "ACC_test_0.0001_32.txt"
+    # trainNeuralNetwork(result_path)
+    f = open(result_path, "r")
+    temp = f.readlines()
+    ACC = []
+    for i in temp:
+        ACC.append([float(k) for k in ((i.strip()).split())])
+    f.close()
+    print(len(ACC[0]))
+
+    plt.plot(ACC[0], "-o", label="acc")
+    # # plt.plot(ACC_1[0], "-,", label="ACC-0.001")
+    # plt.plot(ACC_2[0], "-s", label="ACC-0.01")
+    plt.legend()  # 展示图例
+    plt.xlabel('After Steps')  # 给 x 轴添加标签
+    plt.show()

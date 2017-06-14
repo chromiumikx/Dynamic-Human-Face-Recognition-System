@@ -59,7 +59,8 @@ def detect_faces(image_name, face_cascade):
     faces = face_cascade.detectMultiScale(gray, 1.3, 4)  # 特征的最小、最大检测窗口，它改变检测结果也会改变
     result = []
     for (x, y, width, height) in faces:
-        result.append((x, y, x + width, y + height))  # 返回结果为：人脸区域的左上角和右下角点坐标
+        # lock_down_bias增加下巴，去除头发等
+        result.append((x, y+lock_down_bias, x + width, y + height+lock_down_bias))  # 返回结果为：人脸区域的左上角和右下角点坐标
     return result  # 返回列表或空列表[]
 
 

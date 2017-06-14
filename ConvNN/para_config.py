@@ -29,9 +29,12 @@ image_size = 32
 learning_rate = 1e-4
 conv_layers = 2
 fc_layers = 2
-dropout_keep_prob = 0.5
-max_steps = 130
-target_accuracy = 0.995 # 要求网络学习的精度
-non_user_dir = "new_non_3" # 启用的负面数据集
+dropout_keep_prob = 1
+max_steps = 30
+target_accuracy = 0.98 # 训练过程中要求网络学习的精度
+non_user_dir = "new_non_4" # 启用的负面数据集
 
-light_control = 100
+demand_recognize_acc = 0.99
+light_control = 60 # 要按照标准反面数据集的基本亮度120
+lock_down_bias = 0 # 识别框选向下的便宜像素值，30为下巴的高度
+conv_patch_size = 5

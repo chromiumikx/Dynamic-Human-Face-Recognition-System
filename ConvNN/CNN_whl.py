@@ -268,10 +268,12 @@ def train(x, y, x_test, y_test, is_load=False, user_name=None):
         pre_accuracy_test_value = 0
 
         for i in range(max_steps):
-            for batch_xs, batch_ys in get_patch(x, y, 500):
+            for batch_xs, batch_ys in get_patch(x, y, 700):
                 # 传入每次的训练数据，字典形式
-                _, acc_training, train_loss, output_prediction_val = sess.run([train_step, accuracy, cross_entropy, output_prediction],
-                                                                        feed_dict={x_ph: batch_xs, y_ph: batch_ys, keep_prob: 0.5})
+                _, acc_training, train_loss, output_prediction_val \
+                    = sess.run([train_step, accuracy, cross_entropy, output_prediction],
+                               feed_dict={x_ph: batch_xs, y_ph: batch_ys, keep_prob: 0.5})
+
                 print("ACC:"+str(acc_training))
                 print("LOSS:"+str(train_loss))
             log_loss.append(train_loss)
@@ -377,7 +379,8 @@ def interfere(x, y, user_name):
         print("ACC: "+str(accuracy_val))
 
         # 显示卷积层的情况
-        [h_pool1_val] = sess.run([h_pool1], feed_dict={x_ph: x, y_ph: y, keep_prob: 1})
+        [h_pool1_val] = sess.run([h_pool2], feed_dict={x_ph: x, y_ph: y, keep_prob: 1})
+        print(h_pool1_val.shape)
         show_conv_layers(h_pool1_val)
 
 
@@ -395,12 +398,17 @@ def run_CNN():
         if (target == "T") or (target == "t"):
             target = "Train"
             user_name = input("Input your name:")
+            is_load_pre_model = input("Load Pre Model?(y/n):")
+            if is_load_pre_model == 'y':
+                is_load_pre_model = True
+            else:
+                is_load_pre_model = False
             # 增加整理的另外一个数据集non_2
             # 作为非用户人脸的参照系，主要由手动挑选的正面人脸组成
             # 目的是为了保持，正的用户人脸集和负的非用户人脸集，在倾斜度、光照、姿态、发型、背景性质（未考虑，可能有影响）等保持一致，只有人脸部分不一致
             # 以避免神经网络学习到错误的性质
-            x, y, x_test, y_test = recombine_data([user_name], [non_user_dir]) # 不能以字符串输入，要以列表形式输入
-            train(x, y, x_test, y_test, False, user_name)
+            x, y, x_test, y_test = recombine_data([user_name], [non_user_dir, 'qin']) # 不能以字符串输入，要以列表形式输入
+            train(x, y, x_test, y_test, is_load_pre_model, user_name)
 
         if (target == "I") or (target == "i"):
             target = "Interfere"
